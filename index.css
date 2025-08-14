@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 html, :root {
@@ -413,17 +414,31 @@ body::after { bottom: -20vh; right: -20vw; animation: blob-two-move 25s ease-in-
 }
 .feature-btn { padding: 0.6rem 1.2rem; font-size: calc(0.875rem * var(--font-scale)); font-weight: 600; }
 .fullscreen-toggle-btn {
-    margin-left: auto;
-    width: 44px;
-    height: 44px;
+    width: 38px;
+    height: 38px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0.6rem;
+    padding: 0;
 }
 
 .study-content-area { display: flex; flex-grow: 1; overflow: hidden; }
 .chat-container { width: 40%; min-width: 320px; max-width: 500px; border-right: 1px solid var(--panel-border-color); display: flex; flex-direction: column; }
+
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid var(--panel-border-color);
+  flex-shrink: 0;
+  background-color: rgba(0,0,0,0.1);
+}
+.chat-header h4 {
+    font-size: calc(1.05rem * var(--font-scale));
+    font-weight: 600;
+}
+
 .chat-container, .feature-display-area {
     transition: width 0.4s ease, max-width 0.4s ease, opacity 0.3s ease, padding 0.4s ease, flex-grow 0.4s ease;
 }
