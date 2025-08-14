@@ -10,10 +10,10 @@ If you are using web search, you MUST cite your sources. List the source links c
 When asked for structured data like JSON, provide only the JSON object.
 Be a supportive and encouraging study partner.`;
 
-// --- New User Interfaces ---
-interface Credentials {
+// --- Reverted User Interfaces ---
+interface User {
   username: string;
-  password?: string; // Password is used for creation/validation, but not stored in currentUser
+  password?: string; // Stored for login check, cleared after load
   role: 'admin' | 'student';
 }
 
@@ -609,7 +609,7 @@ const SettingsModal = ({
     theme: Theme;
     onSetTheme: (theme: Theme) => void;
     currentUser: CurrentUser | null;
-    users: Credentials[];
+    users: User[];
     onUserCreate: (username: string, pass: string) => void;
     onUserDelete: (username: string) => void;
 }) => {
@@ -690,7 +690,7 @@ const SettingsModal = ({
                                      </button>
                                  </div>
                              </div>
-                             <p className="setting-note">This will permanently delete all your subjects, chat history, and calendar events. This action cannot be undone.</p>
+                             <p className="setting-note">This will permanently delete all your subjects, chat history, and calendar events for the currently logged-in user. This action cannot be undone.</p>
                         </div>
                     )}
                     {activeTab === 'backup' && (
@@ -709,8 +709,8 @@ const SettingsModal = ({
                         <div className="settings-section user-management-section">
                             <h3>Create New Student</h3>
                             <form onSubmit={handleUserCreateSubmit} className="user-management-form">
-                                <input type="text" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} placeholder="Username" required />
-                                <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Password" required />
+                                <input type="text" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} placeholder="New User's Username" required />
+                                <input type="text" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Password" required />
                                 <button type="submit" className="liquid-button">Create</button>
                             </form>
                             
@@ -748,7 +748,7 @@ const SettingsModal = ({
                                 Study Master is your personal AI-powered study partner, designed to help you understand your course material more effectively.
                                 Upload your documents, get summaries, generate flashcards and mind maps, and chat with an AI tutor that's focused on your content.
                             </p>
-                            <p className="setting-note" style={{marginTop: '1rem'}}>Version: 1.9.0 (Mobile Responsive)</p>
+                            <p className="setting-note" style={{marginTop: '1rem'}}>Version: 1.1.0 (Local Storage)</p>
                             <p className="setting-note" style={{marginTop: '1rem'}}>Created by: Muhammadu Muaz</p>
                         </div>
                     )}
@@ -805,34 +805,20 @@ const NotificationCenter = ({
 }
 
 const App = () => {
-  const apiKey = import.meta.env?.VITE_API_KEY;
+  const geminiApiKey = import.meta.env?.VITE_API_KEY;
 
-  if (!apiKey) {
+  if (!geminiApiKey) {
     return (
       <div className="fullscreen-error-container">
         <div className="error-panel">
           <h1>Configuration Error: API Key Missing</h1>
-          <p>
-            The Study Master application requires a Google Gemini API key to function, but it could not be found.
-          </p>
+          <p>The application requires a Google Gemini API key to function.</p>
           <div className="error-instructions">
             <h2>For Developers & Setup</h2>
-            <p>
-              This is expected if you are setting up the project for the first time or running it incorrectly. Please follow these steps:
-            </p>
-            <ol>
-              <li>In the main project folder, create a new file named exactly <code>.env</code></li>
-              <li>Inside this <code>.env</code> file, add the following line, replacing <code>YOUR_API_KEY_HERE</code> with your actual key:
-                <pre><code>VITE_API_KEY=YOUR_API_KEY_HERE</code></pre>
-              </li>
-              <li>
-                <strong>Most Important:</strong> You must run this app with the Vite development server. Open a terminal in the project folder and run:
-                <pre><code>npm install<br/>npm run dev</code></pre>
-              </li>
-              <li>Then, open the <code>http://localhost:...</code> URL it gives you in your browser.</li>
-            </ol>
+            <p>Please create a file named <code>.env</code> in the project's root folder and add the following key:</p>
+            <pre><code>VITE_API_KEY=YOUR_GOOGLE_GEMINI_API_KEY_HERE</code></pre>
             <p className="error-warning">
-              You cannot run this application by simply opening the <code>index.html</code> file directly.
+              After adding the key, you must restart the Vite development server.
             </p>
           </div>
         </div>
@@ -843,7 +829,7 @@ const App = () => {
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);  
   const [loginError, setLoginError] = useState<string | null>(null);
-  const [users, setUsers] = useState<Credentials[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
 
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [activeSubjectId, setActiveSubjectId] = useState<number | null>(null);
@@ -879,7 +865,7 @@ const App = () => {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const ai = useMemo(() => new GoogleGenAI({ apiKey }), [apiKey]);
+  const ai = useMemo(() => new GoogleGenAI({ apiKey: geminiApiKey }), [geminiApiKey]);
   
   // Apply theme and font size to the root element
   useEffect(() => {
@@ -894,18 +880,36 @@ const App = () => {
       if (storedUsers) {
         setUsers(JSON.parse(storedUsers));
       } else {
-        // Initialize with default admin user if no users are stored
-        const adminUser = { username: 'admin', password: 'admin', role: 'admin' as const };
-        localStorage.setItem('studymaster_users', JSON.stringify([adminUser]));
-        setUsers([adminUser]);
+        // Default users if none exist in storage
+        const defaultUsers: User[] = [
+          { username: 'admin', password: 'admin', role: 'admin' as const },
+          { username: 'Nimran', password: 'Nimran 987654', role: 'student' as const },
+          { username: 'Nilfa', password: 'Mznil 169', role: 'student' as const },
+        ];
+        localStorage.setItem('studymaster_users', JSON.stringify(defaultUsers));
+        setUsers(defaultUsers);
       }
     } catch (e) {
       console.error("Failed to load users from localStorage", e);
-      const adminUser = { username: 'admin', password: 'admin', role: 'admin' as const };
-      setUsers([adminUser]);
     }
-    setIsLoadingAuth(false); // Finished checking for users
   }, []);
+
+  // Check for a logged-in user in the session on startup
+  useEffect(() => {
+    try {
+        const sessionUserJson = sessionStorage.getItem('studymaster_session');
+        if (sessionUserJson) {
+            const sessionUser = JSON.parse(sessionUserJson);
+            // Verify the user from session still exists in our main user list
+            if (users.find(u => u.username === sessionUser.username)) {
+                setCurrentUser(sessionUser);
+            }
+        }
+    } catch (e) {
+        console.error("Failed to load session", e);
+    }
+    setIsLoadingAuth(false);
+  }, [users]); // This runs once the `users` state is populated.
 
   // Effect to load data when user changes
   useEffect(() => {
@@ -960,43 +964,49 @@ const App = () => {
     }
   }, [currentUser, subjects, events, notifications, theme, fontSize]);
 
-  const handleLogin = (username: string, password: string) => {
+  const handleLogin = async (username: string, password: string) => {
+    setLoginError(null);
     const user = users.find(u => u.username === username && u.password === password);
     if (user) {
-      setCurrentUser({ username: user.username, role: user.role });
-      setLoginError(null);
+        const sessionUser: CurrentUser = { username: user.username, role: user.role };
+        setCurrentUser(sessionUser);
+        sessionStorage.setItem('studymaster_session', JSON.stringify(sessionUser));
     } else {
-      setLoginError('Invalid username or password.');
+        setLoginError('Invalid username or password.');
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setCurrentUser(null);
-    setSubjects([]); setEvents([]); setNotifications([]); setActiveSubjectId(null);
+    sessionStorage.removeItem('studymaster_session');
+    // Reset state to a clean slate
+    setSubjects([]); 
+    setEvents([]); 
+    setNotifications([]); 
+    setActiveSubjectId(null);
   };
   
-  const handleCreateUser = (username: string, pass: string) => {
+  const handleCreateUser = async (username: string, pass: string) => {
       if (!username.trim() || !pass.trim()) {
           alert("Username and password cannot be empty."); return;
       }
-      if (users.some(u => u.username === username)) {
-          alert("Username already exists."); return;
+      if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+          alert("A user with this username already exists."); return;
       }
-      const newUser: Credentials = { username, password: pass, role: 'student' };
+      const newUser: User = { username, password: pass, role: 'student' };
       const updatedUsers = [...users, newUser];
       setUsers(updatedUsers);
       localStorage.setItem('studymaster_users', JSON.stringify(updatedUsers));
+      alert(`Student account for ${username} created successfully.`);
   };
   
   const handleDeleteUser = (usernameToDelete: string) => {
-      if (usernameToDelete === 'admin') {
-          alert("Cannot delete the admin user."); return;
-      }
-      if (window.confirm(`Are you sure you want to delete user "${usernameToDelete}"? All their data will be lost.`)) {
-          const updatedUsers = users.filter(u => u.username !== usernameToDelete);
-          setUsers(updatedUsers);
-          localStorage.setItem('studymaster_users', JSON.stringify(updatedUsers));
-          localStorage.removeItem(`studymaster_data_${usernameToDelete}`);
+      if (window.confirm(`Are you sure you want to delete the user "${usernameToDelete}"? This will also delete all of their data.`)) {
+        const updatedUsers = users.filter(u => u.username !== usernameToDelete);
+        setUsers(updatedUsers);
+        localStorage.setItem('studymaster_users', JSON.stringify(updatedUsers));
+        localStorage.removeItem(`studymaster_data_${usernameToDelete}`);
+        alert(`User ${usernameToDelete} has been deleted.`);
       }
   };
 
@@ -1414,9 +1424,8 @@ const App = () => {
             setEvents([]);
             setNotifications([]);
             setActiveSubjectId(null);
-            // The auto-saving useEffect will persist this empty state, but we also remove it directly for good measure.
             localStorage.removeItem(`studymaster_data_${currentUser.username}`);
-            setIsSettingsOpen(false); // Close settings modal after clearing
+            setIsSettingsOpen(false);
         }
     };
 
@@ -1621,7 +1630,7 @@ const App = () => {
           ))}
         </ul>
         <div className="sidebar-footer">
-            <span style={{marginRight: 'auto', color: 'var(--text-secondary)'}}>User: {currentUser.username}</span>
+            <span style={{marginRight: 'auto', color: 'var(--text-secondary)', fontSize: '0.8rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={currentUser.username}>User: {currentUser.username}</span>
             <button className="settings-btn liquid-button" onClick={handleLogout} title="Logout">Logout</button>
             <button className="settings-btn liquid-button" onClick={() => setIsSettingsOpen(true)} title="Options">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
