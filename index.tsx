@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import ReactDOM from 'react-dom/client';
 import { GoogleGenAI, Chat, GenerateContentResponse, Type } from '@google/genai';
@@ -1621,6 +1622,12 @@ const App = () => {
                 </div>
                 <div className={`study-content-area ${isChatFullscreen ? 'chat-fullscreen' : ''} view-on-mobile-${activeMobileView}`}>
                     <aside className="chat-container">
+                        <div className="chat-header">
+                            <h4>Chat Session</h4>
+                            <button className="fullscreen-toggle-btn liquid-button" onClick={() => setIsChatFullscreen(prev => !prev)} title={isChatFullscreen ? "Show Feature Panel" : "Expand Chat"}>
+                                {isChatFullscreen ? ( <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg> ) : ( <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h6v6m-11 5L21 3m-6 12v6h-6m-5-11L3 21"/></svg> )}
+                            </button>
+                        </div>
                         <div className="chat-messages">
                         {activeSubject.messages.map((msg, index) => (
                             <div key={index} className={`message ${msg.role}`}>
@@ -1649,9 +1656,6 @@ const App = () => {
                           <button className={`feature-btn liquid-button ${activeFeature === 'figures' ? 'active' : ''}`} onClick={() => handleFeatureRequest('figures')}>Figures</button>
                           <button className={`feature-btn liquid-button ${activeFeature === 'questions' ? 'active' : ''}`} onClick={() => handleFeatureRequest('questions')}>Questions</button>
                           <button className={`feature-btn liquid-button`} onClick={() => setIsDocManagerOpen(true)}>Manage Documents</button>
-                          <button className="fullscreen-toggle-btn liquid-button" onClick={() => setIsChatFullscreen(prev => !prev)} title={isChatFullscreen ? "Show Feature Panel" : "Expand Chat"}>
-                              {isChatFullscreen ? ( <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg> ) : ( <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h6v6m-11 5L21 3m-6 12v6h-6m-5-11L3 21"/></svg> )}
-                          </button>
                       </div>
                       <div className="feature-content-wrapper">
                         {renderFeatureContent()}
