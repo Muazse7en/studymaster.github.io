@@ -832,7 +832,7 @@ const SettingsModal = ({
                                 Study Master is your personal AI-powered study partner, designed to help you understand your course material more effectively.
                                 Upload your documents, get summaries, generate flashcards and mind maps, and chat with an AI tutor that's focused on your content.
                             </p>
-                            <p className="setting-note" style={{marginTop: '1rem'}}>Version: 2.0.0 (Modern Calendar)</p>
+                            <p className="setting-note" style={{marginTop: '1rem'}}>Version: 2.0.1 (Login Fix)</p>
                             <p className="setting-note" style={{marginTop: '1rem'}}>Created by: Muhammadu Muaz</p>
                         </div>
                     )}
@@ -972,29 +972,46 @@ const App = () => {
     document.documentElement.setAttribute('data-font-size', fontSize);
   }, [theme, fontSize]);
 
-  // Load users from localStorage on initial mount
+  // Load users from localStorage on initial mount and merge defaults
   useEffect(() => {
+    const defaultUsers: Credentials[] = [
+      { username: 'admin', password: 'admin', role: 'admin' as const },
+      { username: 'Nilfa', password: 'Mznil169', role: 'student' as const },
+      { username: 'Nimran', password: 'Nimran987654', role: 'student' as const }
+    ];
+
     try {
-      const storedUsers = localStorage.getItem('studymaster_users');
-      if (storedUsers) {
-        setUsers(JSON.parse(storedUsers));
-      } else {
-        // Initialize with default users if none are stored
-        const defaultUsers: Credentials[] = [
-          { username: 'admin', password: 'admin', role: 'admin' as const },
-          { username: 'Nilfa', password: 'Mznil169', role: 'student' as const },
-          { username: 'Nimran', password: 'Nimran987654', role: 'student' as const }
-        ];
-        localStorage.setItem('studymaster_users', JSON.stringify(defaultUsers));
-        setUsers(defaultUsers);
+      const storedUsersJSON = localStorage.getItem('studymaster_users');
+      // Start with the stored users, or an empty array if none are stored.
+      const existingUsers: Credentials[] = storedUsersJSON ? JSON.parse(storedUsersJSON) : [];
+      
+      // Create a copy to modify
+      const updatedUsers = [...existingUsers];
+
+      // A set for quick lookups of existing usernames
+      const existingUsernames = new Set(existingUsers.map(u => u.username));
+
+      let needsUpdate = false;
+
+      // Add default users only if they don't already exist
+      defaultUsers.forEach(defaultUser => {
+        if (!existingUsernames.has(defaultUser.username)) {
+          updatedUsers.push(defaultUser);
+          needsUpdate = true;
+        }
+      });
+      
+      // If we added new users, or if it was the first run, save back.
+      if (needsUpdate || !storedUsersJSON) {
+        localStorage.setItem('studymaster_users', JSON.stringify(updatedUsers));
       }
+
+      setUsers(updatedUsers);
+
     } catch (e) {
-      console.error("Failed to load users from localStorage", e);
-      const defaultUsers: Credentials[] = [
-        { username: 'admin', password: 'admin', role: 'admin' as const },
-        { username: 'Nilfa', password: 'Mznil169', role: 'student' as const },
-        { username: 'Nimran', password: 'Nimran987654', role: 'student' as const }
-      ];
+      console.error("Failed to load/merge users from localStorage, re-initializing with defaults.", e);
+      // Fallback in case of corrupted data
+      localStorage.setItem('studymaster_users', JSON.stringify(defaultUsers));
       setUsers(defaultUsers);
     }
     setIsLoadingAuth(false); // Finished checking for users
