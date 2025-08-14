@@ -1,3 +1,5 @@
+import { auth } from "../firebase/firebase"; // adjust path if needed
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import React, { useState } from 'react';
 
 const LoginPage = ({ onLogin, error }: { onLogin: (email: string, pass: string) => void; error: string | null; }) => {
