@@ -749,6 +749,7 @@ const SettingsModal = ({
                                 Upload your documents, get summaries, generate flashcards and mind maps, and chat with an AI tutor that's focused on your content.
                             </p>
                             <p className="setting-note" style={{marginTop: '1rem'}}>Version: 1.9.0 (Mobile Responsive)</p>
+                            <p className="setting-note" style={{marginTop: '1rem'}}>Created by: Muhammadu Muaz</p>
                         </div>
                     )}
                 </div>
