@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 
 const LoginPage = ({ onLogin, error }: { onLogin: (username: string, pass: string) => void; error: string | null; }) => {
@@ -18,33 +19,29 @@ const LoginPage = ({ onLogin, error }: { onLogin: (username: string, pass: strin
                 </div>
                 <form onSubmit={handleSubmit} className="login-form">
                     <div className="login-form-group">
+                        <label htmlFor="username">Username</label>
                         <input
                             id="username"
                             type="text"
-                            className="login-input"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            placeholder="Username"
                             autoComplete="username"
                             required
                         />
-                         <label htmlFor="username">Username</label>
                     </div>
                      <div className="login-form-group">
+                        <label htmlFor="password">Password</label>
                         <input
                             id="password"
                             type="password"
-                            className="login-input"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Password"
                             autoComplete="current-password"
                             required
                         />
-                         <label htmlFor="password">Password</label>
                     </div>
                     {error && <p className="login-error">{error}</p>}
-                    <button type="submit" className="login-button liquid-button">
+                    <button type="submit" className="btn btn-primary login-button">
                         Login
                     </button>
                 </form>
