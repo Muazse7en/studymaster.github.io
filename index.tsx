@@ -833,7 +833,7 @@ const SettingsModal = ({
                                 Study Master is your personal AI-powered study partner, designed to help you understand your course material more effectively.
                                 Upload your documents, get summaries, generate flashcards and mind maps, and chat with an AI tutor that's focused on your content.
                             </p>
-                            <p className="setting-note" style={{marginTop: '1rem'}}>Version: 2.0.1 (Login Fix)</p>
+                            <p className="setting-note" style={{marginTop: '1rem'}}>Version: 2.1.0 (UI & Parser Fixes)</p>
                             <p className="setting-note" style={{marginTop: '1rem'}}>Created by: Muhammadu Muaz</p>
                         </div>
                     )}
@@ -1289,35 +1289,97 @@ const App = () => {
     };
 
     const markdownToHtml = (text: string): string => {
-        if (!text) return ''; 
-        let html = ''; 
-        let inList = false; 
+        if (!text) return '';
+        let html = '';
+        let inUl = false;
+        let inOl = false;
         let inTable = false;
-        const formatLine = (l: string) => l.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>');
-        for (const line of text.split('\n')) {
+    
+        const formatLine = (l: string) => l
+            .replace(/</g, "&lt;").replace(/>/g, "&gt;")
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>');
+    
+        const lines = text.split('\n');
+    
+        for (const line of lines) {
             const trimmedLine = line.trim();
-            if (trimmedLine === '') { if (inTable) { html += '</tbody></table>'; inTable = false; } if (inList) { html += '</ul>'; inList = false; } continue; }
-            const isTableRow = trimmedLine.startsWith('|') && trimmedLine.endsWith('|');
-            const isSeparator = isTableRow && /^\s*\|?(\s*:?-+:?\s*\|)+(\s*:?-+:?\s*)?\|?\s*$/.test(trimmedLine);
-            if (isTableRow && !isSeparator) {
-                if (inList) { html += '</ul>'; inList = false; }
-                const columns = trimmedLine.slice(1, -1).split('|').map(c => formatLine(c.trim()));
-                if (!inTable) { html += '<table><thead><tr>'; columns.forEach(col => { html += `<th>${col}</th>`; }); html += '</tr></thead><tbody>'; inTable = true;
-                } else { html += '<tr>'; columns.forEach(col => { html += `<td>${col}</td>`; }); html += '</tr>'; }
+    
+            const closeLists = () => {
+                if (inUl) { html += '</ul>'; inUl = false; }
+                if (inOl) { html += '</ol>'; inOl = false; }
+            };
+            const closeTable = () => {
+                if (inTable) { html += '</tbody></table>'; inTable = false; }
+            };
+    
+            // Handle empty lines which act as separators
+            if (trimmedLine === '') {
+                closeLists();
+                closeTable();
                 continue;
             }
-            if (inTable && !isSeparator) { html += '</tbody></table>'; inTable = false; }
-            if (inTable && isSeparator) continue;
-            if (trimmedLine.startsWith('# ')) { if (inList) { html += '</ul>'; inList = false; } html += `<h1>${formatLine(trimmedLine.substring(2))}</h1>`; continue; }
-            if (trimmedLine.startsWith('## ')) { if (inList) { html += '</ul>'; inList = false; } html += `<h2>${formatLine(trimmedLine.substring(3))}</h2>`; continue; }
-            if (trimmedLine.startsWith('### ')) { if (inList) { html += '</ul>'; inList = false; } html += `<h3>${formatLine(trimmedLine.substring(4))}</h3>`; continue; }
-            const isList = trimmedLine.startsWith('* ') || trimmedLine.startsWith('- ');
-            if (isList) { if (!inList) { html += '<ul>'; inList = true; } html += `<li>${formatLine(trimmedLine.substring(trimmedLine.indexOf(' ')+1))}</li>`; continue; }
-            if (inList) { html += '</ul>'; inList = false; }
-            html += `<p>${formatLine(line)}</p>`;
+    
+            // Headings
+            if (trimmedLine.startsWith('# ')) { closeLists(); closeTable(); html += `<h1>${formatLine(trimmedLine.substring(2))}</h1>`; continue; }
+            if (trimmedLine.startsWith('## ')) { closeLists(); closeTable(); html += `<h2>${formatLine(trimmedLine.substring(3))}</h2>`; continue; }
+            if (trimmedLine.startsWith('### ')) { closeLists(); closeTable(); html += `<h3>${formatLine(trimmedLine.substring(4))}</h3>`; continue; }
+    
+            // Tables
+            const isTableRow = trimmedLine.startsWith('|') && trimmedLine.endsWith('|');
+            if (isTableRow) {
+                closeLists();
+                const columns = trimmedLine.slice(1, -1).split('|').map(c => formatLine(c.trim()));
+                const isSeparator = /^\s*\|?(\s*:?-+:?\s*\|)+(\s*:?-+:?\s*)?\|?\s*$/.test(trimmedLine);
+    
+                if (!inTable) {
+                    html += '<table><thead><tr>';
+                    columns.forEach(col => { html += `<th>${col}</th>`; });
+                    html += '</tr></thead><tbody>';
+                    inTable = true;
+                } else {
+                    if(isSeparator) continue;
+                    html += '<tr>';
+                    columns.forEach(col => { html += `<td>${col}</td>`; });
+                    html += '</tr>';
+                }
+                continue;
+            }
+    
+            // Unordered Lists
+            const isUlItem = trimmedLine.startsWith('* ') || trimmedLine.startsWith('- ');
+            if (isUlItem) {
+                closeTable();
+                if (inOl) { html += '</ol>'; inOl = false; }
+                if (!inUl) { html += '<ul>'; inUl = true; }
+                html += `<li>${formatLine(trimmedLine.substring(2))}</li>`;
+                continue;
+            }
+    
+            // Ordered Lists
+            const isOlItem = /^\d+\.\s/.test(trimmedLine);
+            if (isOlItem) {
+                closeTable();
+                if (inUl) { html += '</ul>'; inUl = false; }
+                if (!inOl) { html += '<ol>'; inOl = true; }
+                html += `<li>${formatLine(trimmedLine.substring(trimmedLine.indexOf('.') + 1).trim())}</li>`;
+                continue;
+            }
+            
+            // If we reach here, it's not a list or table item, so close any open tags for them.
+            closeLists();
+            closeTable();
+    
+            if (trimmedLine) {
+                html += `<p>${formatLine(trimmedLine)}</p>`;
+            }
         }
-        if (inTable) html += '</tbody></table>'; 
-        if (inList) html += '</ul>';
+    
+        // Close any remaining open tags at the end of the text
+        if (inUl) html += '</ul>';
+        if (inOl) html += '</ol>';
+        if (inTable) html += '</tbody></table>';
+    
         return html;
     };
 
@@ -1580,7 +1642,24 @@ const App = () => {
 
     const renderSubjectView = () => {
         if (!activeSubject) {
-          return ( <div className="welcome-view"> <div className="welcome-content"> <button className="mobile-menu-btn" onClick={() => setIsSidebarOpen(true)}> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg> </button> <h2>Welcome to Study Master</h2> <p>Your AI-powered study partner. Select a subject or create a new one to begin.</p> </div> </div> );
+          return (
+            <div className="welcome-view">
+              <div className="welcome-content">
+                <button className="mobile-menu-btn" onClick={() => setIsSidebarOpen(true)}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
+                <h2>Welcome, {currentUser?.username}!</h2>
+                <p>Your AI-powered study partner. Select a subject or create a new one to begin.</p>
+                <button
+                    className="liquid-button"
+                    style={{ marginTop: '2rem', padding: '0.8rem 2rem', fontSize: '1rem' }}
+                    onClick={handleAddSubjectClick}
+                >
+                    Get Started
+                </button>
+              </div>
+            </div>
+          );
         }
         return (
           <div className="subject-view">
