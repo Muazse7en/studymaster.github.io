@@ -551,11 +551,17 @@ body::after { bottom: -20vh; right: -20vw; animation: blob-two-move 25s ease-in-
 .calendar-overlay, .settings-overlay { position: fixed; inset: 0; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; z-index: 1000; }
 .calendar-modal, .event-editor-modal { border-radius: 20px; width: 90%; display: flex; flex-direction: column; max-height: 90vh; }
 .calendar-modal { max-width: 1100px; }
-.calendar-header { padding: 1rem 1.5rem; border-bottom: 1px solid var(--panel-border-color); display: flex; justify-content: space-between; align-items: center; }
-.calendar-header h2 { font-size: 1.5rem; }
+.calendar-header { padding: 1rem 1.5rem; border-bottom: 1px solid var(--panel-border-color); display: flex; flex-direction: column; gap: 1rem; }
+.calendar-header-top { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+.calendar-title-and-nav { display: flex; align-items: center; gap: 1.5rem; }
+.calendar-title-and-nav h2 { font-size: 1.5rem; }
 .calendar-nav { display: flex; align-items: center; gap: 0.5rem; }
-.calendar-nav button { padding: 0.5rem 1rem; font-weight: 600; }
-.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); padding: 1rem; gap: 0.5rem; overflow-y: auto; }
+.calendar-nav button { padding: 0.5rem 1rem; font-weight: 600; border-radius: 8px; border: none; background-color: rgba(255,255,255,0.1); color: var(--text-primary); cursor: pointer; }
+.calendar-tabs { display: flex; align-self: flex-start; gap: 0.5rem; }
+.tab-btn { padding: 0.5rem 1.2rem; border: none; background: none; color: var(--text-secondary); font-weight: 600; cursor: pointer; position: relative; border-radius: 8px; }
+.tab-btn.active { color: var(--text-primary); background-color: var(--button-active-bg); }
+.calendar-body { flex-grow: 1; overflow-y: auto; }
+.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); padding: 1rem; gap: 0.5rem; }
 .day-name { text-align: center; color: var(--text-secondary); font-weight: 600; padding-bottom: 0.5rem; }
 .day-cell { border: 1px solid var(--panel-border-color); border-radius: 8px; min-height: 120px; padding: 0.5rem; transition: background-color 0.2s; }
 .day-cell.empty { background: none; border-color: transparent; }
@@ -566,6 +572,39 @@ body::after { bottom: -20vh; right: -20vw; animation: blob-two-move 25s ease-in-
 .event-marker:hover { background-color: var(--primary-accent); color: white; }
 .event-time { font-weight: bold; color: var(--secondary-accent); }
 .event-marker:hover .event-time { color: white; }
+.calendar-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--panel-border-color); display: flex; justify-content: flex-end; }
+.add-event-main-btn { padding: 0.5rem 1rem; }
+
+/* --- Agenda & To-Do View --- */
+.agenda-view { display: flex; flex-direction: column; gap: 1.5rem; padding: 1rem 1.5rem; }
+.agenda-section h3 { margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--panel-border-color); font-size: 1.1rem; }
+.agenda-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+.agenda-item { display: flex; align-items: center; gap: 1rem; padding: 0.75rem; background-color: rgba(0,0,0,0.15); border-radius: 8px; }
+.agenda-item.event-item { cursor: pointer; transition: background-color 0.2s; }
+.agenda-item.event-item:hover { background-color: rgba(255,255,255,0.1); }
+.agenda-item-date { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 48px; height: 48px; flex-shrink: 0; background-color: rgba(0,0,0,0.2); border-radius: 8px; border: 1px solid var(--panel-border-color); font-weight: 600; }
+.agenda-item-date span:first-child { font-size: 1.2rem; }
+.agenda-item-date span:last-child { font-size: 0.8rem; text-transform: uppercase; color: var(--text-secondary); }
+.agenda-item-details { flex-grow: 1; display: flex; flex-direction: column; }
+.agenda-item-title { font-weight: 600; }
+.agenda-item-sub { font-size: 0.85rem; color: var(--text-secondary); }
+.empty-list-message { text-align: center; padding: 1rem; color: var(--text-secondary); }
+
+.add-todo-form { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+.add-todo-form input, .add-todo-form select { border: 1px solid var(--panel-border-color); background-color: rgba(0,0,0,0.2); border-radius: 8px; padding: 0.6rem 0.8rem; font-size: 0.9rem; color: var(--text-primary); }
+.add-todo-form input { flex-grow: 1; }
+.add-todo-form select { flex-shrink: 0; }
+.add-todo-btn { width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+
+.todo-item { gap: 0.75rem; }
+.todo-item input[type="checkbox"] { display: none; }
+.custom-checkbox { width: 22px; height: 22px; border: 2px solid var(--text-secondary); border-radius: 50%; cursor: pointer; flex-shrink: 0; position: relative; transition: all 0.2s; }
+.custom-checkbox::after { content: '✓'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: bold; transform: scale(0); transition: transform 0.2s; color: white; }
+.todo-item input[type="checkbox"]:checked + .custom-checkbox { background-color: var(--success-color); border-color: var(--success-color); }
+.todo-item input[type="checkbox"]:checked + .custom-checkbox::after { transform: scale(1); }
+.todo-item.completed .agenda-item-title { text-decoration: line-through; color: var(--text-secondary); }
+.btn-danger-small { background: none; border: none; color: var(--text-secondary); font-size: 1.5rem; cursor: pointer; line-height: 1; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; }
+.btn-danger-small:hover { background-color: var(--danger-color); color: white; }
 
 /* --- Event Editor Modal --- */
 .event-editor-modal { max-width: 500px; width: 90%; }
@@ -646,7 +685,8 @@ body::after { bottom: -20vh; right: -20vw; animation: blob-two-move 25s ease-in-
 .btn-cancel:hover { background-color: rgba(255,255,255,0.1); }
 .settings-action-btn { padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; }
 .setting-control button.active { background-color: var(--primary-accent); border-color: var(--primary-accent); color: white; }
-.close-modal-btn { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: var(--text-secondary); cursor: pointer; z-index: 10; }
+.close-modal-btn { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: var(--text-secondary); cursor: pointer; z-index: 10; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+.close-modal-btn:hover { background-color: rgba(255,255,255,0.1); }
 
 /* --- Login Page --- */
 .login-page {
@@ -933,6 +973,35 @@ body::after { bottom: -20vh; right: -20vw; animation: blob-two-move 25s ease-in-
     .user-management-form {
         grid-template-columns: 1fr;
     }
+
+    /* Responsive Calendar */
+    .calendar-modal {
+      max-width: 95vw;
+      max-height: 85vh;
+    }
+    .day-cell {
+      min-height: 80px;
+      padding: 0.25rem;
+    }
+    .day-number {
+      width: 24px;
+      height: 24px;
+      font-size: 0.8rem;
+    }
+    .event-marker {
+        font-size: 0.7rem;
+        padding: 2px 4px;
+    }
+    .event-time { display: none; }
+    .calendar-title-and-nav h2 {
+        font-size: 1.2rem;
+    }
+    .calendar-title-and-nav {
+        gap: 1rem;
+    }
+    .calendar-nav button {
+        padding: 0.4rem 0.8rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -965,9 +1034,10 @@ body::after { bottom: -20vh; right: -20vw; animation: blob-two-move 25s ease-in-
     .chat-input-form {
         padding: 0.5rem;
     }
-    .settings-modal, .document-management-modal {
-        max-width: 95%;
-        width: 95%;
+    .settings-modal, .document-management-modal, .calendar-modal {
+        max-width: 98vw;
+        width: 98vw;
+        max-height: 90vh;
     }
     .settings-content, .modal-content {
         padding: 1rem;
@@ -980,7 +1050,11 @@ body::after { bottom: -20vh; right: -20vw; animation: blob-two-move 25s ease-in-
         font-size: 0.8rem;
     }
     .add-event-main-btn {
-        display: none;
+        font-size: 0.9rem;
+        padding: 0.6rem 1rem;
+    }
+    .add-todo-form {
+        flex-direction: column;
     }
 }
 
