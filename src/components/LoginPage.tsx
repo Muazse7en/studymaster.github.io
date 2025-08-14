@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 
-const LoginPage = ({ onLogin, error }: { onLogin: (username: string, pass: string) => void; error: string | null; }) => {
-    const [username, setUsername] = useState('');
+const LoginPage = ({ onLogin, error }: { onLogin: (email: string, pass: string) => void; error: string | null; }) => {
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onLogin(username, password);
+        onLogin(email, password);
     };
 
     return (
@@ -19,16 +19,16 @@ const LoginPage = ({ onLogin, error }: { onLogin: (username: string, pass: strin
                 <form onSubmit={handleSubmit} className="login-form">
                     <div className="login-form-group">
                         <input
-                            id="username"
-                            type="text"
+                            id="email"
+                            type="email"
                             className="login-input"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            placeholder="Username"
-                            autoComplete="username"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Email"
+                            autoComplete="email"
                             required
                         />
-                         <label htmlFor="username">Username</label>
+                         <label htmlFor="email">Email</label>
                     </div>
                      <div className="login-form-group">
                         <input
