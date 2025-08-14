@@ -1,57 +1,41 @@
-import { auth } from "../firebase/firebase"; // adjust path if needed
-import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+// src/components/LoginPage.tsx
+import { useState } from 'react';
+import { auth, googleProvider } from '../firebase/firebase';
 
-const LoginPage = ({ onLogin, error }: { onLogin: (email: string, pass: string) => void; error: string | null; }) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+const LoginPage = () => {
+  const [user, setUser] = useState<firebase.User | null>(null);
+  const [error, setError] = useState('');
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        onLogin(email, password);
-    };
+  const loginWithGoogle = async () => {
+    try {
+      const result = await auth.signInWithPopup(googleProvider);
+      setUser(result.user);
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
 
-    return (
-        <div className="login-page">
-            <div className="login-container">
-                <div className="login-content">
-                    <h1>Study Master</h1>
-                    <p>Your AI-powered study partner</p>
-                </div>
-                <form onSubmit={handleSubmit} className="login-form">
-                    <div className="login-form-group">
-                        <input
-                            id="email"
-                            type="email"
-                            className="login-input"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder="Email"
-                            autoComplete="email"
-                            required
-                        />
-                         <label htmlFor="email">Email</label>
-                    </div>
-                     <div className="login-form-group">
-                        <input
-                            id="password"
-                            type="password"
-                            className="login-input"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Password"
-                            autoComplete="current-password"
-                            required
-                        />
-                         <label htmlFor="password">Password</label>
-                    </div>
-                    {error && <p className="login-error">{error}</p>}
-                    <button type="submit" className="login-button liquid-button">
-                        Login
-                    </button>
-                </form>
-            </div>
+  const logout = async () => {
+    await auth.signOut();
+    setUser(null);
+  };
+
+  return (
+    <div>
+      <h2>Login Page</h2>
+      {user ? (
+        <div>
+          <p>Welcome, {user.displayName}</p>
+          <button onClick={logout}>Logout</button>
         </div>
-    );
+      ) : (
+        <div>
+          <button onClick={loginWithGoogle}>Login with Google</button>
+          {error && <p style={{ color: 'red' }}>{error}</p>}
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default LoginPage;
