@@ -1368,27 +1368,41 @@ const App = () => {
         const response = await ai.models.generateContent({ model: 'gemini-2.5-flash', contents: { parts: [imagePart, textPart] } });
         return response.text;
     };
-    const getTextFromPdf = async (file: File): Promise<string> => {
-        const base64Data = await getBase64(file);
-        const pdfPart = { inlineData: { data: base64Data.split(',')[1], mimeType: 'application/pdf' }};
-        const textPart = { text: 'Extract all text from the provided PDF document. Maintain the original structure, including paragraphs and headings, as best as possible. If the document is unreadable or contains no text, return an empty string.' };
-        const response = await ai.models.generateContent({ model: 'gemini-2.5-flash', contents: { parts: [pdfPart, textPart] }});
-        return response.text;
-    }
     const getTextAndImagesFromPdf = async (file: File): Promise<{text: string; images: DocumentImage[]}> => {
-        const base64Data = await getBase64Util(file);
+        const base64Data = await getBase64(file);
         const pdfPart = { inlineData: { data: base64Data.split(',')[1], mimeType: 'application/pdf' } };
         const instructionPart = { text: "Analyze the provided PDF and extract its contents into the required JSON format. This includes all text and all meaningful images/diagrams." };
         try {
-            const response = await ai.models.generateContent({ model: "gemini-2.5-flash", contents: { parts: [instructionPart, pdfPart] }, config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { extractedText: { type: Type.STRING }, extractedImages: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { name: { type: Type.STRING }, caption: { type: Type.STRING }, imageData: { type: Type.STRING } } } } } } }, });
+            const response = await ai.models.generateContent({
+                model: "gemini-2.5-flash", contents: { parts: [instructionPart, pdfPart] },
+                config: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: Type.OBJECT, properties: {
+                            extractedText: { type: Type.STRING, description: 'All text extracted from the PDF, preserving structure and formatting like headings and paragraphs.' },
+                            extractedImages: { type: Type.ARRAY, description: 'An array of all diagrams, figures, and images found in the PDF. IMPORTANT: Only include meaningful figures, ignore logos or decorative elements.',
+                                items: { type: Type.OBJECT, properties: {
+                                        name: { type: Type.STRING, description: 'A descriptive name for the image, like "Figure 1.1". If no name is available, create one.' },
+                                        caption: { type: Type.STRING, description: 'The original caption of the image from the document, if available. Otherwise, an empty string.' },
+                                        imageData: { type: Type.STRING, description: 'The image data encoded as a Base64 string, without the data URI prefix.' }
+                                    }, required: ["name", "caption", "imageData"]
+                                }
+                            }
+                        }, required: ["extractedText", "extractedImages"]
+                    }
+                },
+            });
             const parsedData = JSON.parse(response.text) as ExtractedPdfData;
             if (!parsedData.extractedText || !Array.isArray(parsedData.extractedImages)) throw new Error("Parsed JSON has incorrect structure.");
-            const images = (parsedData.extractedImages || []).map((img: { name: string; caption: string; imageData: string }) => ({ name: img.name || 'Untitled Figure', caption: img.caption || '', data: `data:image/png;base64,${img.imageData}` })).filter((img: DocumentImage) => img.data.length > 30);
+            const images = (parsedData.extractedImages || []).map((img: { name: string; caption: string; imageData: string }) => ({
+                name: img.name || 'Untitled Figure', caption: img.caption || '',
+                data: `data:image/png;base64,${img.imageData}`
+            })).filter((img: DocumentImage) => img.data.length > 30);
             return { text: parsedData.extractedText, images };
         } catch (error) {
             console.error("Failed to parse PDF with image extraction, falling back to text-only extraction.", error);
-            const textOnly = await getTextFromPdf(file);
-            return { text: textOnly, images: [] };
+            const textOnlyResponse = await ai.models.generateContent({ model: 'gemini-2.5-flash', contents: { parts: [ { text: 'Extract all text from the provided PDF document.' }, pdfPart] }});
+            return { text: textOnlyResponse.text, images: [] };
         }
     };
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1640,6 +1654,9 @@ const App = () => {
                         <div ref={messagesEndRef} />
                         </div>
                         <form className="chat-input-form" onSubmit={handleSendMessage}>
+                            <button type="button" className="upload-doc-btn liquid-button" onClick={() => setIsDocManagerOpen(true)} title="Add/Manage Documents" disabled={isLoading}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                            </button>
                             <input type="text" className="chat-input" placeholder={isInternetSearchEnabled ? "Ask a question (with internet search)..." : "Ask a question..."} value={userInput} onChange={(e) => setUserInput(e.target.value)} disabled={isLoading} />
                             <div className="chat-input-actions">
                                 <button type="button" className={`internet-toggle-btn liquid-button ${isInternetSearchEnabled ? 'active' : ''}`} onClick={() => setIsInternetSearchEnabled(!isInternetSearchEnabled)} title={isInternetSearchEnabled ? "Disable Internet Search" : "Enable Internet Search"} disabled={isLoading} > <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg> </button>
