@@ -4,27 +4,29 @@ import ReactDOM from 'react-dom/client';
 import { GoogleGenAI, Chat, GenerateContentResponse, Type } from '@google/genai';
 import LoginPage from './src/components/LoginPage';
 
-// --- ICONS (Phosphor-style, line-art) ---
-const IconMenu = (props: React.SVGProps<SVGSVGElement>) => (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>);
-const IconPlus = (props: React.SVGProps<SVGSVGElement>) => (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>);
-const IconPencil = (props: React.SVGProps<SVGSVGElement>) => (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>);
-const IconTrash = (props: React.SVGProps<SVGSVGElement>) => (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>);
-const IconUser = (props: React.SVGProps<SVGSVGElement>) => (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>);
-const IconSignOut = (props: React.SVGProps<SVGSVGElement>) => (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>);
-const IconSettings = (props: React.SVGProps<SVGSVGElement>) => (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>);
-const IconBell = (props: React.SVGProps<SVGSVGElement>) => (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>);
-const IconCalendar = (props: React.SVGProps<SVGSVGElement>) => (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>);
-const IconUpload = (props: React.SVGProps<SVGSVGElement>) => (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>);
-const IconX = (props: React.SVGProps<SVGSVGElement>) => (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>);
-const IconPaperclip = (props: React.SVGProps<SVGSVGElement>) => (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>);
-const IconGlobe = (props: React.SVGProps<SVGSVGElement>) => (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>);
-const IconSend = (props: React.SVGProps<SVGSVGElement>) => (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>);
-const IconArrowsOut = (props: React.SVGProps<SVGSVGElement>) => (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M15 3h6v6m-11 5L21 3m-6 12v6h-6m-5-11L3 21"/></svg>);
-const IconArrowsIn = (props: React.SVGProps<SVGSVGElement>) => (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>);
-const IconReset = (props: React.SVGProps<SVGSVGElement>) => (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M3 2v6h6"/><path d="M21 12A9 9 0 0 0 6 5.3L3 8"/><path d="M21 22v-6h-6"/><path d="M3 12a9 9 0 0 0 15 6.7l3-2.7"/></svg>);
-const IconDoc = (props: React.SVGProps<SVGSVGElement>) => (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>);
-const IconBellSolid = (props: React.SVGProps<SVGSVGElement>) => (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}><path d="M20 17h2v2H2v-2h2v-7c0-4.42 3.58-8 8-8s8 3.58 8 8v7Zm-2 0v-7c0-3.31-2.69-6-6-6s-6 2.69-6 6v7h12Zm-6 5c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2Z"/></svg>);
-
+// --- ICONS (Phosphor-style, line-art, 1.5px stroke) ---
+const Icon = (props: React.SVGProps<SVGSVGElement> & {className?: string}) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...props} />;
+const IconMenu = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></Icon>;
+const IconPlus = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M12 5v14m-7-7h14" /></Icon>;
+const IconPencil = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M17.5 2.5a2.5 2.5 0 0 1 3.5 3.5L8.5 18.5 4 19l.5-4.5L17.5 2.5z" /></Icon>;
+const IconTrash = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M20 6H4m14 0a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2m-1 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6m4-6v6" /></Icon>;
+const IconUser = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm-7 9c0-4 6-5 7-5s7 1 7 5" /></Icon>;
+const IconSignOut = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4m7 14 5-5-5-5m5 5H9" /></Icon>;
+const IconSettings = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M12 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0zm0 6a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 0a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm0-6a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm0 0a3 3 0 1 1-6 0 3 3 0 0 1 6 0zm0-6a3 3 0 1 1 0 6 3 3 0 0 1 0-6z" /></Icon>;
+const IconBell = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9m-3.73 13a2 2 0 0 1-3.46 0" /></Icon>;
+const IconCalendar = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M3 4.5h18v15H3v-15zM16 2.5v4M8 2.5v4M3 9.5h18" /></Icon>;
+const IconUpload = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m14-7-5-5-5 5m5-5v12" /></Icon>;
+const IconX = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M6 18 18 6M6 6l12 12" /></Icon>;
+const IconPaperclip = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" /></Icon>;
+const IconGlobe = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></Icon>;
+const IconSend = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="m22 2-7 20-4-9-9-4 20-7z" /></Icon>;
+const IconArrowsOut = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M15 3h6v6m-11 5L21 3m-6 12v6h-6m-5-11L3 21" /></Icon>;
+const IconArrowsIn = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" /></Icon>;
+const IconReset = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M3 2v6h6m12 12v-6h-6m0-6A9 9 0 0 0 6 5.3L3 8m15 6.7A9 9 0 0 0 21 8" /></Icon>;
+const IconDoc = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" /><path d="M14 2v6h6M16 13H8m8 4H8m-2-8H8" /></Icon>;
+const IconAppearance = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M12 3a9 9 0 1 0 0 18Z M12 3a9 9 0 1 1 0 18Z M12 3v18" /></Icon>;
+const IconData = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M12 21a9 9 0 0 1-9-9c0-4.968 4.032-9 9-9s9 4.032 9 9-4.032 9-9 9z M7 14h10 M7 10h10" /></Icon>;
+const IconInfo = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm0,18a8,8,0,1,1,8-8A8,8,0,0,1,12,20ZM12,10a1,1,0,0,0-1,1v4a1,1,0,0,0,2,0V11A1,1,0,0,0,12,10ZM11,7h2v2H11Z" transform="scale(1.2) translate(-2, -2)" fill="currentColor" strokeWidth="0"/></Icon>;
 
 const SYSTEM_INSTRUCTION = `You are 'Study Master', an expert AI tutor. 
 You will be provided with text and often images from study documents. Your knowledge base for the session is an combination of all the documents.
@@ -259,36 +261,39 @@ const DocumentManagerModal = ({
     };
 
     return (
-        <div className="overlay-base" onClick={onClose}>
-            <div className="modal-base document-management-modal" onClick={e => e.stopPropagation()}>
-                <header className="modal-header">
+        <div className="overlay" onClick={onClose}>
+            <div className="modal document-management-modal" style={{maxWidth: '800px'}} onClick={e => e.stopPropagation()}>
+                <header className="modal__header">
                     <h2>Manage Study Materials</h2>
-                    <button className="btn-icon" onClick={onClose} aria-label="Close"><IconX /></button>
+                    <button className="btn btn--icon" onClick={onClose} aria-label="Close"><IconX className="icon icon--md" /></button>
                 </header>
-                <div className="modal-content">
+                <div className="modal__content">
                     {isProcessing && ( <div className="document-processing-overlay"> <div className="loading-spinner"></div> <p>Analyzing documents...</p> </div> )}
                     <div className="document-list-container">
                         <h3>Loaded Documents ({docs.length})</h3>
-                        <ul className="document-list">
-                            {docs.map(doc => ( <li key={doc.name} className="document-item" title={doc.name}> <IconDoc className="doc-icon"/> <span className="doc-name">{doc.name}</span> <small className="doc-size">{(doc.content.length / 1024).toFixed(1)} KB</small> <button className="btn-icon doc-remove-btn" onClick={() => handleRemoveDocument(doc.name)} title={`Remove ${doc.name}`}><IconTrash/></button> </li> ))}
+                        <div className="document-list">
+                            {docs.map(doc => ( <div key={doc.name} className="document-item" title={doc.name}> <IconDoc className="icon icon--md doc-icon"/> <span className="doc-name">{doc.name}</span> <small className="doc-size">{(doc.content.length / 1024).toFixed(1)} KB</small> <button className="btn btn--icon doc-remove-btn" onClick={() => handleRemoveDocument(doc.name)} title={`Remove ${doc.name}`}><IconTrash className="icon icon--sm" /></button> </div> ))}
                             {docs.length === 0 && ( <p className="no-docs-message">No documents added yet.</p> )}
-                        </ul>
+                        </div>
                     </div>
                     <div className="document-add-container">
                         <div className="document-upload-controls">
-                            <button className="btn btn-secondary" onClick={() => fileInputRef.current?.click()}> <IconUpload/> Upload Files </button>
-                            <small>Upload images, PDFs, or text files.</small>
+                             <h4>Upload Files</h4>
+                             <p><small>Upload images, PDFs, or text files.</small></p>
+                            <button className="btn btn--secondary" onClick={() => fileInputRef.current?.click()}> <IconUpload className="icon icon--sm" /> Upload from Device </button>
                              <input type="file" ref={fileInputRef} onChange={handleFileChange} style={{display: 'none'}} accept=".txt,.md,text/plain,image/jpeg,image/png,image/webp,.pdf,application/pdf" multiple />
                         </div>
                         <div className="document-paste-controls">
-                            <textarea placeholder="Or paste your notes here..." value={pastedText} onChange={(e) => setPastedText(e.target.value)} />
-                            <button className="btn btn-secondary" onClick={handleAddPastedText} disabled={!pastedText.trim()}>Add Pasted Text</button>
+                            <h4>Paste Text</h4>
+                            <p><small>Or paste your notes directly.</small></p>
+                            <textarea className="input-field" placeholder="Paste content here..." value={pastedText} onChange={(e) => setPastedText(e.target.value)} />
+                            <button className="btn btn--secondary" onClick={handleAddPastedText} disabled={!pastedText.trim()}>Add Pasted Text</button>
                         </div>
                     </div>
                 </div>
-                <footer className="modal-footer">
-                    <button className="btn btn-secondary" onClick={onClose}>Cancel</button>
-                    <button className="btn btn-primary" onClick={handleSaveClick} disabled={isProcessing}>
+                <footer className="modal__footer">
+                    <button className="btn btn--secondary" onClick={onClose}>Cancel</button>
+                    <button className="btn btn--primary" onClick={handleSaveClick} disabled={isProcessing}>
                         {isProcessing ? 'Processing...' : 'Save & Update Session'}
                     </button>
                 </footer>
@@ -425,9 +430,9 @@ const MindMapViewer = ({ node }: { node: MindMapNodeData }) => {
                 ))}
             </div>
              <div className="mind-map-controls">
-                <button onClick={() => zoom(1.2)} title="Zoom In"><IconPlus/></button>
+                <button onClick={() => zoom(1.2)} title="Zoom In"><IconPlus className="icon icon--sm"/></button>
                 <button onClick={() => zoom(1 / 1.2)} title="Zoom Out">-</button>
-                <button onClick={resetTransform} title="Reset View"><IconReset/></button>
+                <button onClick={resetTransform} title="Reset View"><IconReset className="icon icon--sm"/></button>
             </div>
         </div>
     );
@@ -493,42 +498,42 @@ const EventEditorModal = ({
     };
 
     return (
-        <div className="overlay-base" onClick={onClose}>
-            <div className="modal-base event-editor-modal" onClick={e => e.stopPropagation()}>
-                <header className="modal-header">
+        <div className="overlay" onClick={onClose}>
+            <div className="modal event-editor-modal" style={{maxWidth: '600px'}} onClick={e => e.stopPropagation()}>
+                <header className="modal__header">
                     <h2>{event?.id ? 'Edit Event' : 'Add New Event'}</h2>
-                    <button className="btn-icon" onClick={onClose}><IconX/></button>
+                    <button className="btn btn--icon" onClick={onClose}><IconX className="icon icon--md" /></button>
                 </header>
-                <form onSubmit={handleSave} className="modal-content event-editor-form">
+                <form onSubmit={handleSave} className="modal__content">
                     <div className="form-group">
                         <label htmlFor="event-title">Title</label>
-                        <input id="event-title" type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g., Midterm Exam" required />
+                        <input id="event-title" className="input-field" type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g., Midterm Exam" required />
                     </div>
                     <div className="form-row">
                         <div className="form-group">
                             <label htmlFor="event-date">Date</label>
-                            <input id="event-date" type="date" value={date} onChange={e => setDate(e.target.value)} required />
+                            <input id="event-date" className="input-field" type="date" value={date} onChange={e => setDate(e.target.value)} required />
                         </div>
                         <div className="form-group">
                             <label htmlFor="event-time">Time (Optional)</label>
-                            <input id="event-time" type="time" value={time} onChange={e => setTime(e.target.value)} />
+                            <input id="event-time" className="input-field" type="time" value={time} onChange={e => setTime(e.target.value)} />
                         </div>
                     </div>
                     <div className="form-group">
                         <label htmlFor="event-subject">Subject (Optional)</label>
-                        <select id="event-subject" value={subjectId} onChange={e => setSubjectId(e.target.value)}>
+                        <select id="event-subject" className="input-field" value={subjectId} onChange={e => setSubjectId(e.target.value)}>
                             <option value="">General</option>
                             {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                         </select>
                     </div>
                     <div className="form-group">
                         <label htmlFor="event-description">Description (Optional)</label>
-                        <textarea id="event-description" value={description} onChange={e => setDescription(e.target.value)} placeholder="e.g., Chapters 4-7" />
+                        <textarea id="event-description" className="input-field" value={description} onChange={e => setDescription(e.target.value)} placeholder="e.g., Chapters 4-7" />
                     </div>
-                    <footer className="modal-footer">
-                        {event?.id && <button type="button" className="btn btn-danger" onClick={handleDelete}>Delete Event</button>}
-                        <button type="button" className="btn btn-secondary" onClick={onClose}>Cancel</button>
-                        <button type="submit" className="btn btn-primary">Save Event</button>
+                    <footer className="modal__footer">
+                        {event?.id && <button type="button" className="btn btn--danger" onClick={handleDelete} style={{marginRight: 'auto'}}>Delete Event</button>}
+                        <button type="button" className="btn btn--secondary" onClick={onClose}>Cancel</button>
+                        <button type="submit" className="btn btn--primary">Save Event</button>
                     </footer>
                 </form>
             </div>
@@ -588,19 +593,19 @@ const CalendarView = ({
         .sort((a,b) => a.date.localeCompare(b.date) || (a.time || '23:59').localeCompare(b.time || '23:59'));
 
     return (
-        <div className="overlay-base" onClick={onClose}>
-            <div className="modal-base calendar-modal" onClick={e => e.stopPropagation()}>
-                <header className="modal-header calendar-header">
+        <div className="overlay" onClick={onClose}>
+            <div className="modal calendar-modal" style={{maxWidth: '1100px'}} onClick={e => e.stopPropagation()}>
+                <header className="modal__header calendar-header">
                     <div className="calendar-header-top">
                         <div className="calendar-title-and-nav">
                             <h2>{currentDate.toLocaleString('default', { month: 'long' })} {currentDate.getFullYear()}</h2>
                             <div className="calendar-nav">
-                                <button className='btn btn-secondary' onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))}>&lt;</button>
-                                <button className='btn btn-secondary' onClick={() => setCurrentDate(new Date())}>Today</button>
-                                <button className='btn btn-secondary' onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))}>&gt;</button>
+                                <button className='btn btn--secondary' onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))}>&lt;</button>
+                                <button className='btn btn--secondary' onClick={() => setCurrentDate(new Date())}>Today</button>
+                                <button className='btn btn--secondary' onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))}>&gt;</button>
                             </div>
                         </div>
-                        <button className="btn-icon" onClick={onClose}><IconX/></button>
+                        <button className="btn btn--icon" onClick={onClose}><IconX className="icon icon--md" /></button>
                     </div>
                     <div className="calendar-tabs">
                         <button className={`tab-btn ${activeTab === 'calendar' ? 'active' : ''}`} onClick={() => setActiveTab('calendar')}>Calendar</button>
@@ -654,12 +659,12 @@ const CalendarView = ({
                             <div className="agenda-section">
                                 <h3>To-Do List</h3>
                                 <form onSubmit={handleAddTodo} className="add-todo-form">
-                                    <input type="text" value={newTodoText} onChange={e => setNewTodoText(e.target.value)} placeholder="Add a new to-do item..." />
-                                    <select value={newTodoSubjectId} onChange={e => setNewTodoSubjectId(e.target.value)}>
+                                    <input type="text" className="input-field" value={newTodoText} onChange={e => setNewTodoText(e.target.value)} placeholder="Add a new to-do item..." />
+                                    <select className="input-field" value={newTodoSubjectId} onChange={e => setNewTodoSubjectId(e.target.value)}>
                                         <option value="">General</option>
                                         {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                                     </select>
-                                    <button type="submit" className="btn btn-primary">+</button>
+                                    <button type="submit" className="btn btn--primary">+</button>
                                 </form>
                                 {todos.length > 0 ? (
                                     <ul className="agenda-list todo-list">
@@ -671,7 +676,7 @@ const CalendarView = ({
                                                     <span className="agenda-item-title">{todo.text}</span>
                                                     <small className="agenda-item-sub">{getSubjectName(todo.subjectId)}</small>
                                                 </div>
-                                                <button className="btn-icon" style={{marginLeft: 'auto'}} onClick={() => onDeleteTodo(todo.id)}><IconTrash/></button>
+                                                <button className="btn btn--icon" style={{marginLeft: 'auto'}} onClick={() => onDeleteTodo(todo.id)}><IconTrash className="icon icon--sm" /></button>
                                             </li>
                                         ))}
                                     </ul>
@@ -680,8 +685,8 @@ const CalendarView = ({
                         </div>
                     )}
                 </div>
-                <footer className="modal-footer">
-                    <button className="btn btn-primary" onClick={() => onAddOrEditEvent(null)}><IconPlus/> Add Calendar Event</button>
+                <footer className="modal__footer">
+                    <button className="btn btn--primary" onClick={() => onAddOrEditEvent(null)}><IconPlus className="icon icon--sm" /> Add Calendar Event</button>
                 </footer>
             </div>
         </div>
@@ -717,14 +722,14 @@ const SettingsModal = ({
     onUserCreate: (username: string, pass: string) => void;
     onUserDelete: (username: string) => void;
 }) => {
-    const [activeTab, setActiveTab] = useState('settings');
+    const [activeTab, setActiveTab] = useState('appearance');
     const restoreInputRef = useRef<HTMLInputElement>(null);
     const [newUsername, setNewUsername] = useState('');
     const [newPassword, setNewPassword] = useState('');
 
     useEffect(() => {
         if (!isOpen) {
-            setActiveTab('settings'); // Reset tab on close
+            setActiveTab('appearance'); // Reset tab on close
         }
     }, [isOpen]);
 
@@ -737,109 +742,138 @@ const SettingsModal = ({
         setNewPassword('');
     };
 
+    const navItems = [
+      { id: 'appearance', label: 'Appearance', icon: IconAppearance },
+      { id: 'data', label: 'Data Management', icon: IconData },
+      ...(currentUser?.role === 'admin' ? [{ id: 'users', label: 'User Management', icon: IconUser }] : []),
+      { id: 'about', label: 'About', icon: IconInfo },
+    ];
+
+
     return (
-        <div className="overlay-base" onClick={onClose}>
-            <div className="modal-base settings-modal" onClick={e => e.stopPropagation()}>
-                <header className="modal-header">
-                    <h2>Options</h2>
-                    <button className="btn-icon" onClick={onClose} aria-label="Close"><IconX /></button>
+        <div className="overlay" onClick={onClose}>
+            <div className="modal settings-modal" style={{maxWidth: '900px', height: '700px'}} onClick={e => e.stopPropagation()}>
+                <header className="modal__header">
+                    <h2>Settings</h2>
+                    <button className="btn btn--icon" onClick={onClose} aria-label="Close"><IconX className="icon icon--md" /></button>
                 </header>
-                <div className="settings-tabs">
-                    <button className={`settings-tab-btn ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>Appearance</button>
-                    <button className={`settings-tab-btn ${activeTab === 'backup' ? 'active' : ''}`} onClick={() => setActiveTab('backup')}>Data</button>
-                     {currentUser?.role === 'admin' && (
-                        <button className={`settings-tab-btn ${activeTab === 'users' ? 'active' : ''}`} onClick={() => setActiveTab('users')}>Users</button>
-                    )}
-                    <button className={`settings-tab-btn ${activeTab === 'about' ? 'active' : ''}`} onClick={() => setActiveTab('about')}>About</button>
-                </div>
-                <div className="modal-content">
-                    {activeTab === 'settings' && (
+                <div className="modal__content">
+                    <nav className="settings-nav">
+                      {navItems.map(item => (
+                         <a key={item.id} className={`settings-nav__link ${activeTab === item.id ? 'active' : ''}`} onClick={() => setActiveTab(item.id)}>
+                            <item.icon className="icon icon--md" />
+                            <span>{item.label}</span>
+                         </a>
+                      ))}
+                    </nav>
+                    <div className="settings-content">
+                    {activeTab === 'appearance' && (
                         <div className="settings-section">
-                            <h3>Customization</h3>
+                            <h3>Appearance</h3>
+                            <p>Customize the look and feel of the application.</p>
                             <div className="setting-item">
-                                <label>Font Size</label>
-                                <div className="setting-control">
-                                    <button className={`btn btn-secondary ${fontSize === 'small' ? 'active' : ''}`} onClick={() => onSetFontSize('small')}>Small</button>
-                                    <button className={`btn btn-secondary ${fontSize === 'medium' ? 'active' : ''}`} onClick={() => onSetFontSize('medium')}>Medium</button>
-                                    <button className={`btn btn-secondary ${fontSize === 'large' ? 'active' : ''}`} onClick={() => onSetFontSize('large')}>Large</button>
+                                <div className="setting-item__label">
+                                    <strong>Theme</strong>
+                                    <span>Switch between light and dark mode.</span>
+                                </div>
+                                <div className="setting-item__control">
+                                   <label className="theme-switch">
+                                      <input type="checkbox" checked={theme === 'dark'} onChange={(e) => onSetTheme(e.target.checked ? 'dark' : 'light')} />
+                                      <span className="theme-switch__slider"></span>
+                                   </label>
                                 </div>
                             </div>
-                             <div className="setting-item">
-                                <label>Theme</label>
-                                <div className="setting-control">
-                                   <button className={`btn btn-secondary ${theme === 'light' ? 'active' : ''}`} onClick={() => onSetTheme('light')}>Light</button>
-                                   <button className={`btn btn-secondary ${theme === 'dark' ? 'active' : ''}`} onClick={() => onSetTheme('dark')}>Dark</button>
+                            <div className="setting-item">
+                                <div className="setting-item__label">
+                                  <strong>Font Size</strong>
+                                  <span>Adjust the application's font size.</span>
+                                </div>
+                                <div className="setting-item__control">
+                                    <button className={`btn btn--secondary ${fontSize === 'small' ? 'active' : ''}`} onClick={() => onSetFontSize('small')}>Small</button>
+                                    <button className={`btn btn--secondary ${fontSize === 'medium' ? 'active' : ''}`} onClick={() => onSetFontSize('medium')}>Medium</button>
+                                    <button className={`btn btn--secondary ${fontSize === 'large' ? 'active' : ''}`} onClick={() => onSetFontSize('large')}>Large</button>
                                 </div>
                             </div>
                         </div>
                     )}
-                    {activeTab === 'backup' && (
+                    {activeTab === 'data' && (
                         <div className="settings-section">
-                            <h3>Backup & Restore</h3>
-                            <p className="setting-note">Save all your subjects, chats, events, and to-dos to a file on your device. Restore will overwrite current data for this user.</p>
-                            <div style={{display: 'flex', gap: '1rem', marginTop: '1rem'}}>
-                                <button className="btn btn-secondary" onClick={onBackup}>Download Backup</button>
-                                <input type="file" accept=".json" ref={restoreInputRef} style={{display: 'none'}} onChange={onRestore} />
-                                <button className="btn btn-secondary" onClick={() => restoreInputRef.current?.click()}>Upload & Restore</button>
+                            <h3>Data Management</h3>
+                            <p>Save or restore your user data. Restore will overwrite current data.</p>
+                            <div className="setting-item">
+                                <div className="setting-item__label">
+                                  <strong>Backup & Restore</strong>
+                                  <span>Save all subjects, chats, and events to a file.</span>
+                                </div>
+                                <div className="setting-item__control">
+                                    <button className="btn btn--secondary" onClick={onBackup}>Download Backup</button>
+                                    <input type="file" accept=".json" ref={restoreInputRef} style={{display: 'none'}} onChange={onRestore} />
+                                    <button className="btn btn--secondary" onClick={() => restoreInputRef.current?.click()}>Upload & Restore</button>
+                                </div>
                             </div>
-
-                            <h3 style={{marginTop: '2rem'}} className='danger-zone-title'>Danger Zone</h3>
                              <div className="setting-item">
-                                 <label>Clear All Data</label>
-                                 <button className="btn btn-danger" onClick={onClearData}>
-                                    Clear All Subjects & Data
+                                 <div className="setting-item__label">
+                                  <strong style={{color: 'var(--color-state-error)'}}>Clear All Data</strong>
+                                  <span>Permanently delete all data for this user.</span>
+                                 </div>
+                                 <button className="btn btn--danger" onClick={onClearData}>
+                                    Clear Data
                                  </button>
                              </div>
-                             <p className="setting-note">This will permanently delete all your subjects, chat history, calendar events, and to-do lists for the current user. This action cannot be undone.</p>
                         </div>
                     )}
                     {activeTab === 'users' && currentUser?.role === 'admin' && (
-                        <div className="settings-section user-management-section">
-                            <h3>Create New Student</h3>
-                            <form onSubmit={handleUserCreateSubmit} className="user-management-form">
-                                <input type="text" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} placeholder="Username" required />
-                                <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Password" required />
-                                <button type="submit" className="btn btn-primary">Create</button>
+                        <div className="settings-section">
+                            <h3>User Management</h3>
+                            <p>Create and manage student user accounts.</p>
+                             <form onSubmit={handleUserCreateSubmit} className="user-management-form" style={{display: 'flex', gap: '8px', alignItems: 'flex-end', marginBottom: '24px'}}>
+                                <div className="form-group" style={{flex: 1}}>
+                                    <label>New Username</label>
+                                    <input className="input-field" type="text" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} placeholder="Username" required />
+                                </div>
+                                <div className="form-group" style={{flex: 1}}>
+                                    <label>Password</label>
+                                    <input className="input-field" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Password" required />
+                                </div>
+                                <button type="submit" className="btn btn--primary">Create</button>
                             </form>
                             
-                            <h3>Existing Users</h3>
-                            <div className="user-list-table-wrapper">
-                                <table className="user-list-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Username</th>
-                                            <th>Role</th>
-                                            <th>Actions</th>
+                            <table className="user-list-table">
+                                <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Role</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {users.map(user => (
+                                        <tr key={user.username}>
+                                            <td>{user.username}</td>
+                                            <td>{user.role}</td>
+                                            <td>
+                                                {user.role !== 'admin' && (
+                                                    <button className="btn btn--danger" onClick={() => onUserDelete(user.username)}>Delete</button>
+                                                )}
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        {users.map(user => (
-                                            <tr key={user.username}>
-                                                <td>{user.username}</td>
-                                                <td>{user.role}</td>
-                                                <td>
-                                                    {user.role !== 'admin' && (
-                                                        <button className="btn btn-danger" onClick={() => onUserDelete(user.username)}>Delete</button>
-                                                    )}
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
                     )}
                     {activeTab === 'about' && (
                         <div className="settings-section">
                             <h3>About Study Master</h3>
-                            <p className="setting-note">
+                            <p>
                                 Study Master is your personal AI-powered study partner, designed to help you understand your course material more effectively.
                                 Upload your documents, get summaries, generate flashcards and mind maps, and chat with an AI tutor that's focused on your content.
                             </p>
-                            <p className="setting-note" style={{marginTop: '1rem'}}>Version: 3.0.0 (UI Overhaul)</p>
-                            <p className="setting-note" style={{marginTop: '1rem'}}>Created by: Muhammadu Muaz</p>
+                            <p style={{marginTop: '1rem'}}>Version: 3.1.0 (Design System Overhaul)</p>
+                            <p style={{marginTop: '1rem'}}>Created by: Muhammadu Muaz</p>
                         </div>
                     )}
+                    </div>
                 </div>
             </div>
         </div>
@@ -866,15 +900,15 @@ const NotificationCenter = ({
     return (
         <div className="notification-panel-wrapper">
              <div className="notification-panel" onClick={e => e.stopPropagation()}>
-                <header className="modal-header notification-header">
+                <header className="modal__header notification-header">
                     <h3>Notifications ({unreadCount})</h3>
-                    <button className='btn-ghost' onClick={onClearAll} disabled={notifications.length === 0}>Clear All</button>
+                    <button className='btn btn--ghost' onClick={onClearAll} disabled={notifications.length === 0}>Clear All</button>
                 </header>
                 <div className="notification-list">
                     {notifications.length > 0 ? (
                         notifications.map(n => (
                             <div key={n.id} className={`notification-item ${n.read ? 'read' : ''}`} onClick={() => onMarkAsRead(n.id)}>
-                                <div className="notification-icon"><IconBellSolid/></div>
+                                <div className="notification-icon"><IconBell className="icon icon--md" /></div>
                                 <div className="notification-content">
                                     <p>{n.message}</p>
                                     <small>{new Date(n.date).toLocaleString()}</small>
@@ -958,7 +992,7 @@ const App = () => {
   const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large'>('medium');
   const [theme, setTheme] = useState<Theme>('dark');
   const [isChatFullscreen, setIsChatFullscreen] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [activeMobileView, setActiveMobileView] = useState<'chat' | 'tools'>('chat');
 
 
@@ -1443,7 +1477,7 @@ const App = () => {
 
     const renderFeatureContent = () => {
         if (isGeneratingFeature) { return ( <div className="feature-loading-view"> <div className="loading-spinner"></div> <p>Generating {activeFeature}...</p> </div> ); }
-        if (!featureContent && activeFeature !== 'figures') { return ( <div className="feature-placeholder"> <h3>Study Tools</h3> <p>Select a feature from the toolbar to generate insights from your document, or ask a question in the chat.</p> </div> ); }
+        if (!featureContent && activeFeature !== 'figures') { return ( <div className="feature-placeholder"> <h3>Study Tools</h3> <p>Select a feature to generate insights, or ask a question in chat.</p> </div> ); }
         switch (activeFeature) {
             case 'flashcards':
                  if (!Array.isArray(featureContent)) { return <div className="feature-content">{typeof featureContent === 'string' ? featureContent : 'Error: Invalid content for flashcards.'}</div>; }
@@ -1457,29 +1491,29 @@ const App = () => {
             case 'summary': case 'questions': case 'workout': case 'did-you-know': case 'key-takeaways':
                  if (typeof featureContent === 'string') { return <div className="feature-content" dangerouslySetInnerHTML={{ __html: markdownToHtml(featureContent) }}></div> }
                  return <div className="feature-content">Could not display content.</div>;
-            default: return null;
+            default: return ( <div className="feature-placeholder"> <h3>Study Tools</h3> <p>Select a feature to generate insights, or ask a question in chat.</p> </div> );
         }
     };
 
     const renderSubjectView = () => {
         if (!activeSubject) {
-          return ( <div className="welcome-view"> <div className="welcome-content"> <button className="btn-icon mobile-menu-btn" onClick={() => setIsSidebarOpen(true)}> <IconMenu/> </button> <h2>Welcome to Study Master</h2> <p>Your AI-powered study partner. Select a subject or create a new one to begin.</p> </div> </div> );
+          return ( <div className="welcome-view"> <div className="welcome-content"> <button className="btn btn--icon mobile-menu-btn" onClick={() => setIsSidebarOpen(true)}> <IconMenu className="icon icon--lg" /> </button> <h2>Welcome to Study Master</h2> <p>Your AI-powered study partner. Select a subject or create a new one to begin.</p> </div> </div> );
         }
         return (
           <div className="subject-view">
             <header className="subject-header">
-                <button className="btn-icon mobile-menu-btn" onClick={() => setIsSidebarOpen(true)}> <IconMenu/> </button>
+                <button className="btn btn--icon mobile-menu-btn" onClick={() => setIsSidebarOpen(true)}> <IconMenu className="icon icon--lg" /> </button>
                 <h2>{activeSubject.name}</h2>
-                <div className="main-view-actions">
+                <div className="subject-header__actions">
                      <div className="notification-bell-wrapper">
-                        <button className="btn-icon" onClick={() => setIsNotificationCenterOpen(prev => !prev)} title="Notifications">
-                            <IconBell/>
+                        <button className="btn btn--icon" onClick={() => setIsNotificationCenterOpen(prev => !prev)} title="Notifications">
+                            <IconBell className="icon icon--md" />
                             {notifications.filter(n => !n.read).length > 0 && <span className="notification-badge"/>}
                         </button>
                         <NotificationCenter isOpen={isNotificationCenterOpen} notifications={notifications} onClose={() => setIsNotificationCenterOpen(false)} onMarkAsRead={handleMarkNotificationAsRead} onClearAll={handleClearAllNotifications} />
                     </div>
-                    <button className="btn-icon" onClick={() => setIsCalendarOpen(true)} title="Open Calendar">
-                        <IconCalendar/>
+                    <button className="btn btn--icon" onClick={() => setIsCalendarOpen(true)} title="Open Calendar">
+                        <IconCalendar className="icon icon--md" />
                     </button>
                 </div>
             </header>
@@ -1489,11 +1523,11 @@ const App = () => {
                   <div className="document-setup-area">
                     <h3>Upload Study Materials</h3>
                     <p>Add documents, notes, or images to start your session.</p>
-                     <button className="btn btn-primary" onClick={() => setIsDocManagerOpen(true)}>
-                        <IconUpload/> Manage Documents
+                     <button className="btn btn--primary" onClick={() => setIsDocManagerOpen(true)}>
+                        <IconUpload className="icon icon--sm"/> Manage Documents
                      </button>
                      <button 
-                        className="btn btn-primary save-doc-btn" 
+                        className="btn btn--secondary" 
                         onClick={handleSaveDocument} 
                         disabled={activeSubject.documents.length === 0 || isLoading}> 
                         {isLoading ? 'Processing...' : `Start Study Session`} 
@@ -1510,14 +1544,14 @@ const App = () => {
                     <aside className="chat-container">
                         <div className="chat-header">
                             <h4>Chat Session</h4>
-                            <button className="btn-icon" onClick={() => setIsChatFullscreen(prev => !prev)} title={isChatFullscreen ? "Show Feature Panel" : "Expand Chat"}>
-                                {isChatFullscreen ? <IconArrowsIn/> : <IconArrowsOut/>}
+                            <button className="btn btn--icon" onClick={() => setIsChatFullscreen(prev => !prev)} title={isChatFullscreen ? "Show Feature Panel" : "Expand Chat"}>
+                                {isChatFullscreen ? <IconArrowsIn className="icon icon--md" /> : <IconArrowsOut className="icon icon--md" />}
                             </button>
                         </div>
                         <div className="chat-messages">
                         {activeSubject.messages.map((msg, index) => (
                             <div key={index} className={`message ${msg.role}`}>
-                            <div className="message-content">
+                            <div className="message__content">
                                 {msg.role === 'model' && msg.text === '' && isLoading ? ( <div className="loading-dots"> <div/><div/><div/><div/> </div> ) : ( <div dangerouslySetInnerHTML={{ __html: msg.role === 'model' ? markdownToHtml(msg.text) : msg.text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}} /> )}
                                 {msg.sources && msg.sources.length > 0 && ( <div className="message-sources"> <strong>Sources:</strong> <ul> {msg.sources.map((source, i) => ( <li key={i}> <a href={source.uri} target="_blank" rel="noopener noreferrer">{source.title || source.uri}</a> </li> ))} </ul> </div> )}
                             </div>
@@ -1527,7 +1561,7 @@ const App = () => {
                         </div>
                         <form className="chat-input-form" onSubmit={handleSendMessage}>
                             <textarea
-                                className="chat-input"
+                                className="input-field chat-input"
                                 placeholder={isInternetSearchEnabled ? "Ask a question (with internet search)..." : "Ask a question..."}
                                 value={userInput}
                                 onChange={(e) => setUserInput(e.target.value)}
@@ -1540,22 +1574,21 @@ const App = () => {
                                 disabled={isLoading}
                                 rows={1}
                             />
-
                             <div className="chat-input-actions">
-                                <button type="button" className={`btn-icon internet-toggle-btn ${isInternetSearchEnabled ? 'active' : ''}`} onClick={() => setIsInternetSearchEnabled(!isInternetSearchEnabled)} title={isInternetSearchEnabled ? "Disable Internet Search" : "Enable Internet Search"} disabled={isLoading} > <IconGlobe/> </button>
-                                <button type="submit" className="btn-icon" disabled={isLoading || !userInput.trim()}> <IconSend/> </button>
+                                <button type="button" className={`btn btn--icon internet-toggle-btn ${isInternetSearchEnabled ? 'active' : ''}`} onClick={() => setIsInternetSearchEnabled(!isInternetSearchEnabled)} title={isInternetSearchEnabled ? "Disable Internet Search" : "Enable Internet Search"} disabled={isLoading} > <IconGlobe className="icon icon--md" /> </button>
+                                <button type="button" className="btn btn--icon" onClick={() => setIsDocManagerOpen(true)} title="Manage Documents"><IconPaperclip className="icon icon--md" /></button>
+                                <button type="submit" className="btn btn--primary btn--icon" disabled={isLoading || !userInput.trim()}> <IconSend className="icon icon--md" /> </button>
                             </div>
                         </form>
                     </aside>
                     <main className="feature-display-area">
                       <div className="feature-toolbar">
-                          <button className={`btn btn-secondary ${activeFeature === 'key-takeaways' ? 'active' : ''}`} onClick={() => handleFeatureRequest('key-takeaways')}>Takeaways</button>
-                          <button className={`btn btn-secondary ${activeFeature === 'summary' ? 'active' : ''}`} onClick={() => handleFeatureRequest('summary')}>Summary</button>
-                          <button className={`btn btn-secondary ${activeFeature === 'flashcards' ? 'active' : ''}`} onClick={() => handleFeatureRequest('flashcards')}>Flashcards</button>
-                          <button className={`btn btn-secondary ${activeFeature === 'mind-map' ? 'active' : ''}`} onClick={() => handleFeatureRequest('mind-map')}>Mind Map</button>
-                          <button className={`btn btn-secondary ${activeFeature === 'figures' ? 'active' : ''}`} onClick={() => handleFeatureRequest('figures')}>Figures</button>
-                          <button className={`btn btn-secondary ${activeFeature === 'questions' ? 'active' : ''}`} onClick={() => handleFeatureRequest('questions')}>Questions</button>
-                          <button className={`btn btn-secondary`} onClick={() => setIsDocManagerOpen(true)}>Manage Docs</button>
+                          <button className={`btn btn--secondary ${activeFeature === 'key-takeaways' ? 'active' : ''}`} onClick={() => handleFeatureRequest('key-takeaways')}>Takeaways</button>
+                          <button className={`btn btn--secondary ${activeFeature === 'summary' ? 'active' : ''}`} onClick={() => handleFeatureRequest('summary')}>Summary</button>
+                          <button className={`btn btn--secondary ${activeFeature === 'flashcards' ? 'active' : ''}`} onClick={() => handleFeatureRequest('flashcards')}>Flashcards</button>
+                          <button className={`btn btn--secondary ${activeFeature === 'mind-map' ? 'active' : ''}`} onClick={() => handleFeatureRequest('mind-map')}>Mind Map</button>
+                          <button className={`btn btn--secondary ${activeFeature === 'figures' ? 'active' : ''}`} onClick={() => handleFeatureRequest('figures')}>Figures</button>
+                          <button className={`btn btn--secondary ${activeFeature === 'questions' ? 'active' : ''}`} onClick={() => handleFeatureRequest('questions')}>Questions</button>
                       </div>
                       <div className="feature-content-wrapper">
                         {renderFeatureContent()}
@@ -1578,7 +1611,7 @@ const App = () => {
 
   return (
     <>
-      {isSidebarOpen && <div className="mobile-overlay" onClick={() => setIsSidebarOpen(false)}></div>}
+      <div className={`mobile-overlay ${isSidebarOpen ? 'open' : ''}`} onClick={() => setIsSidebarOpen(false)}></div>
       <SettingsModal 
         isOpen={isSettingsOpen} 
         onClose={() => setIsSettingsOpen(false)} 
@@ -1620,16 +1653,16 @@ const App = () => {
       )}
       
       <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
-        <div className="sidebar-header">
+        <header className="sidebar__header">
           <h1>Subjects</h1>
-            <button className="btn btn-secondary" onClick={handleAddSubjectClick} disabled={isAddingSubject}> <IconPlus /> Add </button>
-        </div>
+            <button className="btn btn--secondary" onClick={handleAddSubjectClick} disabled={isAddingSubject}> <IconPlus className="icon icon--sm" /> Add </button>
+        </header>
         {isAddingSubject && (
           <form onSubmit={handleCreateSubject} className="add-subject-form">
-            <input type="text" className="add-subject-input" value={newSubjectName} onChange={(e) => setNewSubjectName(e.target.value)} placeholder="New subject name..." autoFocus />
+            <input type="text" className="input-field" value={newSubjectName} onChange={(e) => setNewSubjectName(e.target.value)} placeholder="New subject name..." autoFocus />
             <div className="add-subject-actions">
-              <button type="button" className="btn btn-secondary btn-cancel" onClick={handleCancelAddSubject}>Cancel</button>
-              <button type="submit" className="btn btn-primary btn-save">Save</button>
+              <button type="button" className="btn btn--secondary" onClick={handleCancelAddSubject}>Cancel</button>
+              <button type="submit" className="btn btn--primary">Save</button>
             </div>
           </form>
         )}
@@ -1646,22 +1679,22 @@ const App = () => {
                 <span className="subject-name">{subject.name}</span> 
               )}
               <div className="subject-item-actions">
-                <button className="btn-icon" onClick={(e) => handleEnableEditing(e, subject.id)} title={`Rename "${subject.name}"`}>
-                  <IconPencil/>
+                <button className="btn btn--icon" onClick={(e) => handleEnableEditing(e, subject.id)} title={`Rename "${subject.name}"`}>
+                  <IconPencil className="icon icon--sm" />
                 </button>
-                <button className="btn-icon" onClick={(e) => handleDeleteSubject(e, subject.id)} title={`Delete "${subject.name}"`}>
-                    <IconTrash/>
+                <button className="btn btn--icon" onClick={(e) => handleDeleteSubject(e, subject.id)} title={`Delete "${subject.name}"`}>
+                    <IconTrash className="icon icon--sm" />
                 </button>
               </div>
             </li>
           ))}
         </ul>
-        <div className="sidebar-footer">
-            <IconUser/>
-            <span className="user-info">{currentUser.username}</span>
-            <button className="btn-icon" onClick={handleLogout} title="Logout"><IconSignOut/></button>
-            <button className="btn-icon" onClick={() => setIsSettingsOpen(true)} title="Options"><IconSettings/></button>
-        </div>
+        <footer className="sidebar__footer">
+            <IconUser className="icon icon--md" />
+            <span className="sidebar__footer-user">{currentUser.username}</span>
+            <button className="btn btn--icon" onClick={handleLogout} title="Logout"><IconSignOut className="icon icon--md" /></button>
+            <button className="btn btn--icon" onClick={() => setIsSettingsOpen(true)} title="Options"><IconSettings className="icon icon--md" /></button>
+        </footer>
       </aside>
       
       <main className="main-content">
