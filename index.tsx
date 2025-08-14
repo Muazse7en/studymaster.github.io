@@ -37,6 +37,13 @@ interface CalendarEvent {
   description: string;
 }
 
+interface TodoItem {
+  id: number;
+  text: string;
+  completed: boolean;
+  subjectId: number | null;
+}
+
 interface Notification {
   id: number;
   eventId: number;
@@ -511,74 +518,151 @@ const EventEditorModal = ({
 
 const CalendarView = ({
     events,
+    todos,
     subjects,
     onClose,
     onAddOrEditEvent,
-    onDeleteEvent,
+    onSaveTodo,
+    onDeleteTodo,
+    onToggleTodo,
 }: {
     events: CalendarEvent[];
+    todos: TodoItem[];
     subjects: Subject[];
     onClose: () => void;
     onAddOrEditEvent: (event: Partial<CalendarEvent> | null) => void;
-    onDeleteEvent: (eventId: number) => void;
+    onSaveTodo: (todo: Omit<TodoItem, 'id' | 'completed'> & { id?: number }) => void;
+    onDeleteTodo: (todoId: number) => void;
+    onToggleTodo: (todoId: number) => void;
 }) => {
     const [currentDate, setCurrentDate] = useState(new Date());
+    const [activeTab, setActiveTab] = useState<'calendar' | 'agenda'>('calendar');
+    const [newTodoText, setNewTodoText] = useState('');
+    const [newTodoSubjectId, setNewTodoSubjectId] = useState<string>('');
 
     const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
     const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
     const startDay = startOfMonth.getDay();
     const daysInMonth = endOfMonth.getDate();
-
-    const days = Array.from({ length: startDay }, (_, i) => null).concat(
-        Array.from({ length: daysInMonth }, (_, i) => i + 1)
-    );
+    const days = Array.from({ length: startDay }, (_, i) => null).concat(Array.from({ length: daysInMonth }, (_, i) => i + 1));
 
     const getSubjectName = (subjectId: number | null) => {
         if (subjectId === null) return 'General';
         return subjects.find(s => s.id === subjectId)?.name || 'Unknown Subject';
     };
 
+    const handleAddTodo = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!newTodoText.trim()) return;
+        onSaveTodo({ text: newTodoText.trim(), subjectId: newTodoSubjectId ? parseInt(newTodoSubjectId, 10) : null });
+        setNewTodoText('');
+        setNewTodoSubjectId('');
+    };
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+
+    const upcomingEvents = events
+        .filter(event => new Date(event.date + 'T00:00:00') >= today)
+        .sort((a,b) => a.date.localeCompare(b.date) || (a.time || '23:59').localeCompare(b.time || '23:59'));
 
     return (
         <div className="calendar-overlay" onClick={onClose}>
             <div className="calendar-modal" onClick={e => e.stopPropagation()}>
                 <header className="calendar-header">
-                    <h2>{currentDate.toLocaleString('default', { month: 'long' })} {currentDate.getFullYear()}</h2>
-                    <div className="calendar-nav">
-                        <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))}>&lt;</button>
-                        <button onClick={() => setCurrentDate(new Date())}>Today</button>
-                        <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))}>&gt;</button>
-                        <button className="add-event-main-btn liquid-button" onClick={() => onAddOrEditEvent(null)}>+ Add Event</button>
+                    <div className="calendar-header-top">
+                        <div className="calendar-title-and-nav">
+                            <h2>{currentDate.toLocaleString('default', { month: 'long' })} {currentDate.getFullYear()}</h2>
+                            <div className="calendar-nav">
+                                <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))}>&lt;</button>
+                                <button onClick={() => setCurrentDate(new Date())}>Today</button>
+                                <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))}>&gt;</button>
+                            </div>
+                        </div>
+                        <button className="close-modal-btn" onClick={onClose}>&times;</button>
+                    </div>
+                    <div className="calendar-tabs">
+                        <button className={`tab-btn ${activeTab === 'calendar' ? 'active' : ''}`} onClick={() => setActiveTab('calendar')}>Calendar</button>
+                        <button className={`tab-btn ${activeTab === 'agenda' ? 'active' : ''}`} onClick={() => setActiveTab('agenda')}>Agenda &amp; To-Do</button>
                     </div>
                 </header>
-                <div className="calendar-grid">
-                    {'Sun,Mon,Tue,Wed,Thu,Fri,Sat'.split(',').map(day => <div key={day} className="day-name">{day}</div>)}
-                    {days.map((day, index) => {
-                         const dateStr = day ? `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}` : '';
-                         const eventsForDay = day ? events.filter(e => e.date === dateStr).sort((a,b) => (a.time || '23:59').localeCompare(b.time || '23:59')) : [];
-                         const isToday = day && 
-                            today.getFullYear() === currentDate.getFullYear() &&
-                            today.getMonth() === currentDate.getMonth() &&
-                            today.getDate() === day;
-
-                        return (
-                            <div key={index} className={`day-cell ${!day ? 'empty' : ''} ${isToday ? 'today' : ''}`}>
-                                {day && <div className="day-number">{day}</div>}
-                                <div className="events-in-day">
-                                    {eventsForDay.map(event => (
-                                        <div key={event.id} className="event-marker" title={`${event.title} (${getSubjectName(event.subjectId)})`} onClick={() => onAddOrEditEvent(event)}>
-                                            <span className="event-time">{event.time}</span>
-                                            <span className="event-title">{event.title}</span>
+                <div className="calendar-body">
+                    {activeTab === 'calendar' && (
+                        <div className="calendar-grid">
+                            {'Sun,Mon,Tue,Wed,Thu,Fri,Sat'.split(',').map(day => <div key={day} className="day-name">{day}</div>)}
+                            {days.map((day, index) => {
+                                const dateStr = day ? `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}` : '';
+                                const eventsForDay = day ? events.filter(e => e.date === dateStr).sort((a,b) => (a.time || '23:59').localeCompare(b.time || '23:59')) : [];
+                                const isToday = day && today.getFullYear() === currentDate.getFullYear() && today.getMonth() === currentDate.getMonth() && today.getDate() === day;
+                                return (
+                                    <div key={index} className={`day-cell ${!day ? 'empty' : ''} ${isToday ? 'today' : ''}`}>
+                                        {day && <div className="day-number">{day}</div>}
+                                        <div className="events-in-day">
+                                            {eventsForDay.map(event => (
+                                                <div key={event.id} className="event-marker" title={`${event.title} (${getSubjectName(event.subjectId)})`} onClick={() => onAddOrEditEvent(event)}>
+                                                    <span className="event-time">{event.time}</span>
+                                                    <span className="event-title">{event.title}</span>
+                                                </div>
+                                            ))}
                                         </div>
-                                    ))}
-                                </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+                    {activeTab === 'agenda' && (
+                        <div className="agenda-view">
+                            <div className="agenda-section">
+                                <h3>Upcoming Events</h3>
+                                {upcomingEvents.length > 0 ? (
+                                    <ul className="agenda-list">
+                                        {upcomingEvents.map(event => (
+                                            <li key={`event-${event.id}`} className="agenda-item event-item" onClick={() => onAddOrEditEvent(event)}>
+                                                <div className="agenda-item-date">
+                                                    <span>{new Date(event.date + 'T00:00:00').toLocaleString('default', { day: 'numeric' })}</span>
+                                                    <span>{new Date(event.date + 'T00:00:00').toLocaleString('default', { month: 'short' })}</span>
+                                                </div>
+                                                <div className="agenda-item-details">
+                                                    <span className="agenda-item-title">{event.title}</span>
+                                                    <span className="agenda-item-sub">{event.time || 'All-day'} &middot; {getSubjectName(event.subjectId)}</span>
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (<p className="empty-list-message">No upcoming events.</p>)}
                             </div>
-                        );
-                    })}
+                            <div className="agenda-section">
+                                <h3>To-Do List</h3>
+                                <form onSubmit={handleAddTodo} className="add-todo-form">
+                                    <input type="text" value={newTodoText} onChange={e => setNewTodoText(e.target.value)} placeholder="Add a new to-do item..." />
+                                    <select value={newTodoSubjectId} onChange={e => setNewTodoSubjectId(e.target.value)}>
+                                        <option value="">General</option>
+                                        {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                                    </select>
+                                    <button type="submit" className="add-todo-btn liquid-button">+</button>
+                                </form>
+                                {todos.length > 0 ? (
+                                    <ul className="agenda-list todo-list">
+                                        {[...todos].sort((a,b) => Number(a.completed) - Number(b.completed)).map(todo => (
+                                            <li key={`todo-${todo.id}`} className={`agenda-item todo-item ${todo.completed ? 'completed' : ''}`}>
+                                                <input type="checkbox" id={`todo-cb-${todo.id}`} checked={todo.completed} onChange={() => onToggleTodo(todo.id)} />
+                                                <label htmlFor={`todo-cb-${todo.id}`} className="custom-checkbox"></label>
+                                                <div className="agenda-item-details">
+                                                    <span className="agenda-item-title">{todo.text}</span>
+                                                    <span className="agenda-item-sub">{getSubjectName(todo.subjectId)}</span>
+                                                </div>
+                                                <button className="btn-danger-small" onClick={() => onDeleteTodo(todo.id)}>&times;</button>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (<p className="empty-list-message">Your to-do list is empty. Add one above!</p>)}
+                            </div>
+                        </div>
+                    )}
                 </div>
-                 <button className="close-modal-btn" onClick={onClose}>Close</button>
+                <footer className="calendar-footer">
+                    <button className="add-event-main-btn liquid-button" onClick={() => onAddOrEditEvent(null)}>+ Add Calendar Event</button>
+                </footer>
             </div>
         </div>
     );
@@ -686,17 +770,17 @@ const SettingsModal = ({
                                  <label>Clear All Data</label>
                                  <div className="setting-control">
                                      <button className="btn-danger" onClick={onClearData}>
-                                        Clear All Subjects & Events
+                                        Clear All Subjects, Events &amp; To-Dos
                                      </button>
                                  </div>
                              </div>
-                             <p className="setting-note">This will permanently delete all your subjects, chat history, and calendar events. This action cannot be undone.</p>
+                             <p className="setting-note">This will permanently delete all your subjects, chat history, calendar events, and to-do lists. This action cannot be undone.</p>
                         </div>
                     )}
                     {activeTab === 'backup' && (
                         <div className="settings-section">
                             <h3>Backup Current User Data</h3>
-                            <p className="setting-note">Save all your subjects, chats, and events to a file on your device.</p>
+                            <p className="setting-note">Save all your subjects, chats, events, and to-dos to a file on your device.</p>
                             <button className="settings-action-btn" onClick={onBackup}>Download Backup File</button>
 
                             <h3 style={{marginTop: '2rem'}}>Restore Current User Data</h3>
@@ -748,7 +832,7 @@ const SettingsModal = ({
                                 Study Master is your personal AI-powered study partner, designed to help you understand your course material more effectively.
                                 Upload your documents, get summaries, generate flashcards and mind maps, and chat with an AI tutor that's focused on your content.
                             </p>
-                            <p className="setting-note" style={{marginTop: '1rem'}}>Version: 1.9.0 (Mobile Responsive)</p>
+                            <p className="setting-note" style={{marginTop: '1rem'}}>Version: 2.0.0 (Modern Calendar)</p>
                             <p className="setting-note" style={{marginTop: '1rem'}}>Created by: Muhammadu Muaz</p>
                         </div>
                     )}
@@ -860,6 +944,7 @@ const App = () => {
   const [editingSubjectId, setEditingSubjectId] = useState<number | null>(null);
   
   const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [todos, setTodos] = useState<TodoItem[]>([]);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [isEventEditorOpen, setIsEventEditorOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState<Partial<CalendarEvent> | null>(null);
@@ -929,6 +1014,7 @@ const App = () => {
           }));
           setSubjects(restoredSubjects);
           setEvents(data.events || []);
+          setTodos(data.todos || []);
           setNotifications(data.notifications || []);
           if (data.settings) {
             setTheme(data.settings.theme || 'liquid-crystal');
@@ -939,6 +1025,7 @@ const App = () => {
           // If no data, reset the state for the new user
           setSubjects([]);
           setEvents([]);
+          setTodos([]);
           setNotifications([]);
           setActiveSubjectId(null);
           setTheme('liquid-crystal');
@@ -946,7 +1033,7 @@ const App = () => {
         }
       } catch (e) {
         console.error("Failed to load user data, resetting state.", e);
-        setSubjects([]); setEvents([]); setNotifications([]); setActiveSubjectId(null);
+        setSubjects([]); setEvents([]); setTodos([]); setNotifications([]); setActiveSubjectId(null);
       }
     }
   }, [currentUser]);
@@ -958,6 +1045,7 @@ const App = () => {
             const dataToSave = {
                 subjects: subjects.map(({ chat, ...rest }) => rest), // Don't save non-serializable chat object
                 events,
+                todos,
                 notifications,
                 settings: { theme, fontSize }
             };
@@ -966,7 +1054,7 @@ const App = () => {
             console.error(`Failed to save data for user ${currentUser.username}`, error);
         }
     }
-  }, [currentUser, subjects, events, notifications, theme, fontSize]);
+  }, [currentUser, subjects, events, todos, notifications, theme, fontSize]);
 
   const handleLogin = (username: string, password: string) => {
     const user = users.find(u => u.username === username && u.password === password);
@@ -980,7 +1068,7 @@ const App = () => {
 
   const handleLogout = () => {
     setCurrentUser(null);
-    setSubjects([]); setEvents([]); setNotifications([]); setActiveSubjectId(null);
+    setSubjects([]); setEvents([]); setTodos([]); setNotifications([]); setActiveSubjectId(null);
   };
   
   const handleCreateUser = (username: string, pass: string) => {
@@ -1065,6 +1153,7 @@ const App = () => {
         const newSubjects = subjects.filter(s => s.id !== subjectIdToDelete);
         setSubjects(newSubjects);
         setEvents(events.filter(ev => ev.subjectId !== subjectIdToDelete));
+        setTodos(todos.filter(t => t.subjectId !== subjectIdToDelete));
         if (activeSubjectId === subjectIdToDelete) { setActiveSubjectId(newSubjects.length > 0 ? newSubjects[0].id : null); }
     }
   };
@@ -1363,13 +1452,20 @@ const App = () => {
     };
     const handleDeleteEvent = (eventId: number) => { setEvents(events.filter(e => e.id !== eventId)); setIsEventEditorOpen(false); setEditingEvent(null); };
 
+    const handleSaveTodo = (todoData: Omit<TodoItem, 'id' | 'completed'> & { id?: number }) => {
+        if (todoData.id) { setTodos(todos.map(t => t.id === todoData.id ? { ...t, ...todoData } as TodoItem : t));
+        } else { setTodos([...todos, { ...todoData, id: Date.now(), completed: false }]); }
+    };
+    const handleDeleteTodo = (todoId: number) => { setTodos(todos.filter(t => t.id !== todoId)); };
+    const handleToggleTodo = (todoId: number) => { setTodos(todos.map(t => t.id === todoId ? { ...t, completed: !t.completed } : t)); };
+
     const handleMarkNotificationAsRead = (id: number) => { setNotifications(notifications.map(n => n.id === id ? { ...n, read: true } : n)); };
     const handleClearAllNotifications = () => { setNotifications([]); };
 
     const handleBackup = () => {
         if (!currentUser) return;
         try {
-            const dataToBackup = { subjects: subjects.map(({ chat, ...rest }) => rest), events, notifications, settings: { theme, fontSize } };
+            const dataToBackup = { subjects: subjects.map(({ chat, ...rest }) => rest), events, todos, notifications, settings: { theme, fontSize } };
             const jsonString = JSON.stringify(dataToBackup, null, 2);
             const blob = new Blob([jsonString], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
@@ -1397,6 +1493,7 @@ const App = () => {
                         const restoredSubjects: Subject[] = data.subjects.map((s: Omit<Subject, 'chat'>) => ({ ...s, chat: null, documents: (s.documents || []).map((d: Document) => ({ ...d, images: d.images || [] })) }));
                         setSubjects(restoredSubjects);
                         setEvents(data.events);
+                        setTodos(data.todos || []);
                         setNotifications(data.notifications || []);
                         if (data.settings) {
                             const validThemes: Theme[] = ['liquid-crystal', 'deep-blue', 'neon-green-blue', 'neon-pink-purple', 'neon-pink-orange'];
@@ -1417,9 +1514,10 @@ const App = () => {
 
     const handleClearAllData = () => {
         if (!currentUser) return;
-        if (window.confirm(`This will permanently delete all subjects, chats, and calendar events for the user "${currentUser.username}". This action cannot be undone. Continue?`)) {
+        if (window.confirm(`This will permanently delete all subjects, chats, events, and to-dos for the user "${currentUser.username}". This action cannot be undone. Continue?`)) {
             setSubjects([]);
             setEvents([]);
+            setTodos([]);
             setNotifications([]);
             setActiveSubjectId(null);
             // The auto-saving useEffect will persist this empty state, but we also remove it directly for good measure.
@@ -1585,7 +1683,16 @@ const App = () => {
         />
       )}
       {isCalendarOpen && (
-        <CalendarView events={events} subjects={subjects} onClose={() => setIsCalendarOpen(false)} onAddOrEditEvent={handleOpenEventEditor} onDeleteEvent={handleDeleteEvent} />
+        <CalendarView 
+            events={events} 
+            todos={todos}
+            subjects={subjects} 
+            onClose={() => setIsCalendarOpen(false)} 
+            onAddOrEditEvent={handleOpenEventEditor} 
+            onSaveTodo={handleSaveTodo}
+            onDeleteTodo={handleDeleteTodo}
+            onToggleTodo={handleToggleTodo}
+        />
       )}
       {isEventEditorOpen && (
         <EventEditorModal isOpen={isEventEditorOpen} event={editingEvent} subjects={subjects} onClose={() => { setIsEventEditorOpen(false); setEditingEvent(null); }} onSave={handleSaveEvent} onDelete={handleDeleteEvent} />
