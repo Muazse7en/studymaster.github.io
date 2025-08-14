@@ -4,30 +4,6 @@ import ReactDOM from 'react-dom/client';
 import { GoogleGenAI, Chat, GenerateContentResponse, Type } from '@google/genai';
 import LoginPage from './src/components/LoginPage';
 
-// --- ICONS (Phosphor-style, line-art, 1.5px stroke) ---
-const Icon = (props: React.SVGProps<SVGSVGElement> & {className?: string}) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...props} />;
-const IconMenu = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></Icon>;
-const IconPlus = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M12 5v14m-7-7h14" /></Icon>;
-const IconPencil = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M17.5 2.5a2.5 2.5 0 0 1 3.5 3.5L8.5 18.5 4 19l.5-4.5L17.5 2.5z" /></Icon>;
-const IconTrash = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M20 6H4m14 0a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2m-1 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6m4-6v6" /></Icon>;
-const IconUser = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm-7 9c0-4 6-5 7-5s7 1 7 5" /></Icon>;
-const IconSignOut = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4m7 14 5-5-5-5m5 5H9" /></Icon>;
-const IconSettings = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M12 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0zm0 6a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 0a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm0-6a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm0 0a3 3 0 1 1-6 0 3 3 0 0 1 6 0zm0-6a3 3 0 1 1 0 6 3 3 0 0 1 0-6z" /></Icon>;
-const IconBell = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9m-3.73 13a2 2 0 0 1-3.46 0" /></Icon>;
-const IconCalendar = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M3 4.5h18v15H3v-15zM16 2.5v4M8 2.5v4M3 9.5h18" /></Icon>;
-const IconUpload = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m14-7-5-5-5 5m5-5v12" /></Icon>;
-const IconX = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M6 18 18 6M6 6l12 12" /></Icon>;
-const IconPaperclip = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" /></Icon>;
-const IconGlobe = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></Icon>;
-const IconSend = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="m22 2-7 20-4-9-9-4 20-7z" /></Icon>;
-const IconArrowsOut = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M15 3h6v6m-11 5L21 3m-6 12v6h-6m-5-11L3 21" /></Icon>;
-const IconArrowsIn = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" /></Icon>;
-const IconReset = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M3 2v6h6m12 12v-6h-6m0-6A9 9 0 0 0 6 5.3L3 8m15 6.7A9 9 0 0 0 21 8" /></Icon>;
-const IconDoc = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" /><path d="M14 2v6h6M16 13H8m8 4H8m-2-8H8" /></Icon>;
-const IconAppearance = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M12 3a9 9 0 1 0 0 18Z M12 3a9 9 0 1 1 0 18Z M12 3v18" /></Icon>;
-const IconData = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M12 21a9 9 0 0 1-9-9c0-4.968 4.032-9 9-9s9 4.032 9 9-4.032 9-9 9z M7 14h10 M7 10h10" /></Icon>;
-const IconInfo = (props: React.SVGProps<SVGSVGElement>) => <Icon {...props}><path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm0,18a8,8,0,1,1,8-8A8,8,0,0,1,12,20ZM12,10a1,1,0,0,0-1,1v4a1,1,0,0,0,2,0V11A1,1,0,0,0,12,10ZM11,7h2v2H11Z" transform="scale(1.2) translate(-2, -2)" fill="currentColor" strokeWidth="0"/></Icon>;
-
 const SYSTEM_INSTRUCTION = `You are 'Study Master', an expert AI tutor. 
 You will be provided with text and often images from study documents. Your knowledge base for the session is an combination of all the documents.
 When answering, use the provided materials as your primary source. Use Markdown for clear formatting (headings, lists, bold text, and tables). Do not just give the answer; explain the reasoning and the underlying concepts as a great teacher would.
@@ -110,7 +86,7 @@ interface MindMapNodeData {
 }
 
 type Feature = 'summary' | 'questions' | 'workout' | 'did-you-know' | 'flashcards' | 'mind-map' | 'key-takeaways' | 'figures';
-type Theme = 'light' | 'dark';
+type Theme = 'liquid-crystal' | 'deep-blue' | 'neon-green-blue' | 'neon-pink-purple' | 'neon-pink-orange';
 
 // Helper type for parsed PDF data
 interface ExtractedPdfData {
@@ -195,6 +171,7 @@ const DocumentManagerModal = ({
                     }
                 },
             });
+            // Added type assertion here
             const parsedData = JSON.parse(response.text) as ExtractedPdfData;
             if (!parsedData.extractedText || !Array.isArray(parsedData.extractedImages)) throw new Error("Parsed JSON has incorrect structure.");
             const images = (parsedData.extractedImages || []).map((img: { name: string; caption: string; imageData: string }) => ({
@@ -261,39 +238,36 @@ const DocumentManagerModal = ({
     };
 
     return (
-        <div className="overlay" onClick={onClose}>
-            <div className="modal document-management-modal" style={{maxWidth: '800px'}} onClick={e => e.stopPropagation()}>
-                <header className="modal__header">
+        <div className="settings-overlay" onClick={onClose}>
+            <div className="document-management-modal" onClick={e => e.stopPropagation()}>
+                <header className="modal-header">
                     <h2>Manage Study Materials</h2>
-                    <button className="btn btn--icon" onClick={onClose} aria-label="Close"><IconX className="icon icon--md" /></button>
+                    <button className="close-modal-btn" onClick={onClose}>&times;</button>
                 </header>
-                <div className="modal__content">
+                <div className="modal-content">
                     {isProcessing && ( <div className="document-processing-overlay"> <div className="loading-spinner"></div> <p>Analyzing documents...</p> </div> )}
                     <div className="document-list-container">
                         <h3>Loaded Documents ({docs.length})</h3>
-                        <div className="document-list">
-                            {docs.map(doc => ( <div key={doc.name} className="document-item" title={doc.name}> <IconDoc className="icon icon--md doc-icon"/> <span className="doc-name">{doc.name}</span> <small className="doc-size">{(doc.content.length / 1024).toFixed(1)} KB</small> <button className="btn btn--icon doc-remove-btn" onClick={() => handleRemoveDocument(doc.name)} title={`Remove ${doc.name}`}><IconTrash className="icon icon--sm" /></button> </div> ))}
+                        <ul className="document-list">
+                            {docs.map(doc => ( <li key={doc.name} className="document-item" title={doc.name}> <span className="doc-icon">📄</span> <span className="doc-name">{doc.name}</span> <span className="doc-size">{(doc.content.length / 1024).toFixed(1)} KB</span> <button className="doc-remove-btn" onClick={() => handleRemoveDocument(doc.name)} title={`Remove ${doc.name}`}>&times;</button> </li> ))}
                             {docs.length === 0 && ( <p className="no-docs-message">No documents added yet.</p> )}
-                        </div>
+                        </ul>
                     </div>
                     <div className="document-add-container">
                         <div className="document-upload-controls">
-                             <h4>Upload Files</h4>
-                             <p><small>Upload images, PDFs, or text files.</small></p>
-                            <button className="btn btn--secondary" onClick={() => fileInputRef.current?.click()}> <IconUpload className="icon icon--sm" /> Upload from Device </button>
+                            <button className="upload-btn liquid-button" onClick={() => fileInputRef.current?.click()}> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Upload Files </button>
+                            <p className="upload-hint">Upload images, PDFs, or text files.</p>
                              <input type="file" ref={fileInputRef} onChange={handleFileChange} style={{display: 'none'}} accept=".txt,.md,text/plain,image/jpeg,image/png,image/webp,.pdf,application/pdf" multiple />
                         </div>
                         <div className="document-paste-controls">
-                            <h4>Paste Text</h4>
-                            <p><small>Or paste your notes directly.</small></p>
-                            <textarea className="input-field" placeholder="Paste content here..." value={pastedText} onChange={(e) => setPastedText(e.target.value)} />
-                            <button className="btn btn--secondary" onClick={handleAddPastedText} disabled={!pastedText.trim()}>Add Pasted Text</button>
+                            <textarea className="document-paste-area" placeholder="Or paste your notes here..." value={pastedText} onChange={(e) => setPastedText(e.target.value)} />
+                            <button className="paste-add-btn liquid-button" onClick={handleAddPastedText} disabled={!pastedText.trim()}>Add Pasted Text</button>
                         </div>
                     </div>
                 </div>
-                <footer className="modal__footer">
-                    <button className="btn btn--secondary" onClick={onClose}>Cancel</button>
-                    <button className="btn btn--primary" onClick={handleSaveClick} disabled={isProcessing}>
+                <footer className="modal-footer">
+                    <button className="btn-cancel" onClick={onClose}>Cancel</button>
+                    <button className="save-doc-btn liquid-button" onClick={handleSaveClick} disabled={isProcessing}>
                         {isProcessing ? 'Processing...' : 'Save & Update Session'}
                     </button>
                 </footer>
@@ -306,8 +280,8 @@ const DocumentManagerModal = ({
 const Flashcard: React.FC<FlashcardData> = ({ term, definition }) => {
     const [isFlipped, setIsFlipped] = useState(false);
     return (
-        <div className={`flashcard ${isFlipped ? 'is-flipped' : ''}`} onClick={() => setIsFlipped(!isFlipped)}>
-            <div className="flashcard-inner">
+        <div className="flashcard" onClick={() => setIsFlipped(!isFlipped)}>
+            <div className={`flashcard-inner ${isFlipped ? 'is-flipped' : ''}`}>
                 <div className="flashcard-front">{term}</div>
                 <div className="flashcard-back">{definition}</div>
             </div>
@@ -430,9 +404,11 @@ const MindMapViewer = ({ node }: { node: MindMapNodeData }) => {
                 ))}
             </div>
              <div className="mind-map-controls">
-                <button onClick={() => zoom(1.2)} title="Zoom In"><IconPlus className="icon icon--sm"/></button>
+                <button onClick={() => zoom(1.2)} title="Zoom In">+</button>
                 <button onClick={() => zoom(1 / 1.2)} title="Zoom Out">-</button>
-                <button onClick={resetTransform} title="Reset View"><IconReset className="icon icon--sm"/></button>
+                <button onClick={resetTransform} title="Reset View">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 2v6h6"/><path d="M21 12A9 9 0 0 0 6 5.3L3 8"/><path d="M21 22v-6h-6"/><path d="M3 12a9 9 0 0 0 15 6.7l3-2.7"/></svg>
+                </button>
             </div>
         </div>
     );
@@ -498,42 +474,41 @@ const EventEditorModal = ({
     };
 
     return (
-        <div className="overlay" onClick={onClose}>
-            <div className="modal event-editor-modal" style={{maxWidth: '600px'}} onClick={e => e.stopPropagation()}>
-                <header className="modal__header">
+        <div className="calendar-overlay" onClick={onClose}>
+            <div className="event-editor-modal" onClick={e => e.stopPropagation()}>
+                <header className="event-editor-header">
                     <h2>{event?.id ? 'Edit Event' : 'Add New Event'}</h2>
-                    <button className="btn btn--icon" onClick={onClose}><IconX className="icon icon--md" /></button>
+                    <button className="close-modal-btn" onClick={onClose}>&times;</button>
                 </header>
-                <form onSubmit={handleSave} className="modal__content">
+                <form onSubmit={handleSave} className="event-editor-form">
                     <div className="form-group">
                         <label htmlFor="event-title">Title</label>
-                        <input id="event-title" className="input-field" type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g., Midterm Exam" required />
+                        <input id="event-title" type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g., Midterm Exam" required />
                     </div>
                     <div className="form-row">
                         <div className="form-group">
                             <label htmlFor="event-date">Date</label>
-                            <input id="event-date" className="input-field" type="date" value={date} onChange={e => setDate(e.target.value)} required />
+                            <input id="event-date" type="date" value={date} onChange={e => setDate(e.target.value)} required />
                         </div>
                         <div className="form-group">
                             <label htmlFor="event-time">Time (Optional)</label>
-                            <input id="event-time" className="input-field" type="time" value={time} onChange={e => setTime(e.target.value)} />
+                            <input id="event-time" type="time" value={time} onChange={e => setTime(e.target.value)} />
                         </div>
                     </div>
                     <div className="form-group">
                         <label htmlFor="event-subject">Subject (Optional)</label>
-                        <select id="event-subject" className="input-field" value={subjectId} onChange={e => setSubjectId(e.target.value)}>
+                        <select id="event-subject" value={subjectId} onChange={e => setSubjectId(e.target.value)}>
                             <option value="">General</option>
                             {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                         </select>
                     </div>
                     <div className="form-group">
                         <label htmlFor="event-description">Description (Optional)</label>
-                        <textarea id="event-description" className="input-field" value={description} onChange={e => setDescription(e.target.value)} placeholder="e.g., Chapters 4-7" />
+                        <textarea id="event-description" value={description} onChange={e => setDescription(e.target.value)} placeholder="e.g., Chapters 4-7" />
                     </div>
-                    <footer className="modal__footer">
-                        {event?.id && <button type="button" className="btn btn--danger" onClick={handleDelete} style={{marginRight: 'auto'}}>Delete Event</button>}
-                        <button type="button" className="btn btn--secondary" onClick={onClose}>Cancel</button>
-                        <button type="submit" className="btn btn--primary">Save Event</button>
+                    <footer className="event-editor-footer">
+                        {event?.id && <button type="button" className="btn-danger" onClick={handleDelete}>Delete Event</button>}
+                        <button type="submit" className="btn-save">Save Event</button>
                     </footer>
                 </form>
             </div>
@@ -593,23 +568,23 @@ const CalendarView = ({
         .sort((a,b) => a.date.localeCompare(b.date) || (a.time || '23:59').localeCompare(b.time || '23:59'));
 
     return (
-        <div className="overlay" onClick={onClose}>
-            <div className="modal calendar-modal" style={{maxWidth: '1100px'}} onClick={e => e.stopPropagation()}>
-                <header className="modal__header calendar-header">
+        <div className="calendar-overlay" onClick={onClose}>
+            <div className="calendar-modal" onClick={e => e.stopPropagation()}>
+                <header className="calendar-header">
                     <div className="calendar-header-top">
                         <div className="calendar-title-and-nav">
                             <h2>{currentDate.toLocaleString('default', { month: 'long' })} {currentDate.getFullYear()}</h2>
                             <div className="calendar-nav">
-                                <button className='btn btn--secondary' onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))}>&lt;</button>
-                                <button className='btn btn--secondary' onClick={() => setCurrentDate(new Date())}>Today</button>
-                                <button className='btn btn--secondary' onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))}>&gt;</button>
+                                <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))}>&lt;</button>
+                                <button onClick={() => setCurrentDate(new Date())}>Today</button>
+                                <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))}>&gt;</button>
                             </div>
                         </div>
-                        <button className="btn btn--icon" onClick={onClose}><IconX className="icon icon--md" /></button>
+                        <button className="close-modal-btn" onClick={onClose}>&times;</button>
                     </div>
                     <div className="calendar-tabs">
                         <button className={`tab-btn ${activeTab === 'calendar' ? 'active' : ''}`} onClick={() => setActiveTab('calendar')}>Calendar</button>
-                        <button className={`tab-btn ${activeTab === 'agenda' ? 'active' : ''}`} onClick={() => setActiveTab('agenda')}>Agenda & To-Do</button>
+                        <button className={`tab-btn ${activeTab === 'agenda' ? 'active' : ''}`} onClick={() => setActiveTab('agenda')}>Agenda &amp; To-Do</button>
                     </div>
                 </header>
                 <div className="calendar-body">
@@ -626,7 +601,8 @@ const CalendarView = ({
                                         <div className="events-in-day">
                                             {eventsForDay.map(event => (
                                                 <div key={event.id} className="event-marker" title={`${event.title} (${getSubjectName(event.subjectId)})`} onClick={() => onAddOrEditEvent(event)}>
-                                                    <span className="event-title">{event.time && `${event.time} - `}{event.title}</span>
+                                                    <span className="event-time">{event.time}</span>
+                                                    <span className="event-title">{event.title}</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -645,11 +621,11 @@ const CalendarView = ({
                                             <li key={`event-${event.id}`} className="agenda-item event-item" onClick={() => onAddOrEditEvent(event)}>
                                                 <div className="agenda-item-date">
                                                     <span>{new Date(event.date + 'T00:00:00').toLocaleString('default', { day: 'numeric' })}</span>
-                                                    <small>{new Date(event.date + 'T00:00:00').toLocaleString('default', { month: 'short' })}</small>
+                                                    <span>{new Date(event.date + 'T00:00:00').toLocaleString('default', { month: 'short' })}</span>
                                                 </div>
                                                 <div className="agenda-item-details">
                                                     <span className="agenda-item-title">{event.title}</span>
-                                                    <small className="agenda-item-sub">{event.time || 'All-day'} &middot; {getSubjectName(event.subjectId)}</small>
+                                                    <span className="agenda-item-sub">{event.time || 'All-day'} &middot; {getSubjectName(event.subjectId)}</span>
                                                 </div>
                                             </li>
                                         ))}
@@ -659,12 +635,12 @@ const CalendarView = ({
                             <div className="agenda-section">
                                 <h3>To-Do List</h3>
                                 <form onSubmit={handleAddTodo} className="add-todo-form">
-                                    <input type="text" className="input-field" value={newTodoText} onChange={e => setNewTodoText(e.target.value)} placeholder="Add a new to-do item..." />
-                                    <select className="input-field" value={newTodoSubjectId} onChange={e => setNewTodoSubjectId(e.target.value)}>
+                                    <input type="text" value={newTodoText} onChange={e => setNewTodoText(e.target.value)} placeholder="Add a new to-do item..." />
+                                    <select value={newTodoSubjectId} onChange={e => setNewTodoSubjectId(e.target.value)}>
                                         <option value="">General</option>
                                         {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                                     </select>
-                                    <button type="submit" className="btn btn--primary">+</button>
+                                    <button type="submit" className="add-todo-btn liquid-button">+</button>
                                 </form>
                                 {todos.length > 0 ? (
                                     <ul className="agenda-list todo-list">
@@ -674,9 +650,9 @@ const CalendarView = ({
                                                 <label htmlFor={`todo-cb-${todo.id}`} className="custom-checkbox"></label>
                                                 <div className="agenda-item-details">
                                                     <span className="agenda-item-title">{todo.text}</span>
-                                                    <small className="agenda-item-sub">{getSubjectName(todo.subjectId)}</small>
+                                                    <span className="agenda-item-sub">{getSubjectName(todo.subjectId)}</span>
                                                 </div>
-                                                <button className="btn btn--icon" style={{marginLeft: 'auto'}} onClick={() => onDeleteTodo(todo.id)}><IconTrash className="icon icon--sm" /></button>
+                                                <button className="btn-danger-small" onClick={() => onDeleteTodo(todo.id)}>&times;</button>
                                             </li>
                                         ))}
                                     </ul>
@@ -685,8 +661,8 @@ const CalendarView = ({
                         </div>
                     )}
                 </div>
-                <footer className="modal__footer">
-                    <button className="btn btn--primary" onClick={() => onAddOrEditEvent(null)}><IconPlus className="icon icon--sm" /> Add Calendar Event</button>
+                <footer className="calendar-footer">
+                    <button className="add-event-main-btn liquid-button" onClick={() => onAddOrEditEvent(null)}>+ Add Calendar Event</button>
                 </footer>
             </div>
         </div>
@@ -722,18 +698,26 @@ const SettingsModal = ({
     onUserCreate: (username: string, pass: string) => void;
     onUserDelete: (username: string) => void;
 }) => {
-    const [activeTab, setActiveTab] = useState('appearance');
+    const [activeTab, setActiveTab] = useState('settings');
     const restoreInputRef = useRef<HTMLInputElement>(null);
     const [newUsername, setNewUsername] = useState('');
     const [newPassword, setNewPassword] = useState('');
 
     useEffect(() => {
         if (!isOpen) {
-            setActiveTab('appearance'); // Reset tab on close
+            setActiveTab('settings'); // Reset tab on close
         }
     }, [isOpen]);
 
     if (!isOpen) return null;
+
+    const validThemes: { id: Theme; name: string; }[] = [
+        { id: 'liquid-crystal', name: 'Liquid Crystal' },
+        { id: 'deep-blue', name: 'Deep Blue' },
+        { id: 'neon-green-blue', name: 'Neon Green & Blue' },
+        { id: 'neon-pink-purple', name: 'Neon Pink & Purple' },
+        { id: 'neon-pink-orange', name: 'Neon Pink & Orange' }
+    ];
     
     const handleUserCreateSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -742,138 +726,117 @@ const SettingsModal = ({
         setNewPassword('');
     };
 
-    const navItems = [
-      { id: 'appearance', label: 'Appearance', icon: IconAppearance },
-      { id: 'data', label: 'Data Management', icon: IconData },
-      ...(currentUser?.role === 'admin' ? [{ id: 'users', label: 'User Management', icon: IconUser }] : []),
-      { id: 'about', label: 'About', icon: IconInfo },
-    ];
-
-
     return (
-        <div className="overlay" onClick={onClose}>
-            <div className="modal settings-modal" style={{maxWidth: '900px', height: '700px'}} onClick={e => e.stopPropagation()}>
-                <header className="modal__header">
-                    <h2>Settings</h2>
-                    <button className="btn btn--icon" onClick={onClose} aria-label="Close"><IconX className="icon icon--md" /></button>
+        <div className="settings-overlay" onClick={onClose}>
+            <div className="settings-modal" onClick={e => e.stopPropagation()}>
+                <header className="settings-header">
+                    <h2>Options</h2>
+                    <button className="close-modal-btn" onClick={onClose}>&times;</button>
                 </header>
-                <div className="modal__content">
-                    <nav className="settings-nav">
-                      {navItems.map(item => (
-                         <a key={item.id} className={`settings-nav__link ${activeTab === item.id ? 'active' : ''}`} onClick={() => setActiveTab(item.id)}>
-                            <item.icon className="icon icon--md" />
-                            <span>{item.label}</span>
-                         </a>
-                      ))}
-                    </nav>
-                    <div className="settings-content">
-                    {activeTab === 'appearance' && (
-                        <div className="settings-section">
-                            <h3>Appearance</h3>
-                            <p>Customize the look and feel of the application.</p>
-                            <div className="setting-item">
-                                <div className="setting-item__label">
-                                    <strong>Theme</strong>
-                                    <span>Switch between light and dark mode.</span>
-                                </div>
-                                <div className="setting-item__control">
-                                   <label className="theme-switch">
-                                      <input type="checkbox" checked={theme === 'dark'} onChange={(e) => onSetTheme(e.target.checked ? 'dark' : 'light')} />
-                                      <span className="theme-switch__slider"></span>
-                                   </label>
-                                </div>
-                            </div>
-                            <div className="setting-item">
-                                <div className="setting-item__label">
-                                  <strong>Font Size</strong>
-                                  <span>Adjust the application's font size.</span>
-                                </div>
-                                <div className="setting-item__control">
-                                    <button className={`btn btn--secondary ${fontSize === 'small' ? 'active' : ''}`} onClick={() => onSetFontSize('small')}>Small</button>
-                                    <button className={`btn btn--secondary ${fontSize === 'medium' ? 'active' : ''}`} onClick={() => onSetFontSize('medium')}>Medium</button>
-                                    <button className={`btn btn--secondary ${fontSize === 'large' ? 'active' : ''}`} onClick={() => onSetFontSize('large')}>Large</button>
-                                </div>
-                            </div>
-                        </div>
+                <div className="settings-tabs">
+                    <button className={`settings-tab-btn ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>Settings</button>
+                    <button className={`settings-tab-btn ${activeTab === 'backup' ? 'active' : ''}`} onClick={() => setActiveTab('backup')}>Backup & Restore</button>
+                     {currentUser?.role === 'admin' && (
+                        <button className={`settings-tab-btn ${activeTab === 'users' ? 'active' : ''}`} onClick={() => setActiveTab('users')}>User Management</button>
                     )}
-                    {activeTab === 'data' && (
+                    <button className={`settings-tab-btn ${activeTab === 'about' ? 'active' : ''}`} onClick={() => setActiveTab('about')}>About</button>
+                </div>
+                <div className="settings-content">
+                    {activeTab === 'settings' && (
                         <div className="settings-section">
-                            <h3>Data Management</h3>
-                            <p>Save or restore your user data. Restore will overwrite current data.</p>
+                            <h3>Customization</h3>
                             <div className="setting-item">
-                                <div className="setting-item__label">
-                                  <strong>Backup & Restore</strong>
-                                  <span>Save all subjects, chats, and events to a file.</span>
-                                </div>
-                                <div className="setting-item__control">
-                                    <button className="btn btn--secondary" onClick={onBackup}>Download Backup</button>
-                                    <input type="file" accept=".json" ref={restoreInputRef} style={{display: 'none'}} onChange={onRestore} />
-                                    <button className="btn btn--secondary" onClick={() => restoreInputRef.current?.click()}>Upload & Restore</button>
+                                <label>Font Size</label>
+                                <div className="setting-control">
+                                    <button className={fontSize === 'small' ? 'active' : ''} onClick={() => onSetFontSize('small')}>Small</button>
+                                    <button className={fontSize === 'medium' ? 'active' : ''} onClick={() => onSetFontSize('medium')}>Medium</button>
+                                    <button className={fontSize === 'large' ? 'active' : ''} onClick={() => onSetFontSize('large')}>Large</button>
                                 </div>
                             </div>
                              <div className="setting-item">
-                                 <div className="setting-item__label">
-                                  <strong style={{color: 'var(--color-state-error)'}}>Clear All Data</strong>
-                                  <span>Permanently delete all data for this user.</span>
+                                <label>Theme</label>
+                                <div className="setting-control theme-selector-control">
+                                    {validThemes.map(th => (
+                                        <button 
+                                            key={th.id}
+                                            className={`theme-swatch ${th.id} ${theme === th.id ? 'active' : ''}`} 
+                                            onClick={() => onSetTheme(th.id)} 
+                                            title={th.name}>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                             <h3 className="danger-zone-title">Danger Zone</h3>
+                             <div className="setting-item">
+                                 <label>Clear All Data</label>
+                                 <div className="setting-control">
+                                     <button className="btn-danger" onClick={onClearData}>
+                                        Clear All Subjects, Events &amp; To-Dos
+                                     </button>
                                  </div>
-                                 <button className="btn btn--danger" onClick={onClearData}>
-                                    Clear Data
-                                 </button>
                              </div>
+                             <p className="setting-note">This will permanently delete all your subjects, chat history, calendar events, and to-do lists. This action cannot be undone.</p>
+                        </div>
+                    )}
+                    {activeTab === 'backup' && (
+                        <div className="settings-section">
+                            <h3>Backup Current User Data</h3>
+                            <p className="setting-note">Save all your subjects, chats, events, and to-dos to a file on your device.</p>
+                            <button className="settings-action-btn" onClick={onBackup}>Download Backup File</button>
+
+                            <h3 style={{marginTop: '2rem'}}>Restore Current User Data</h3>
+                            <p className="setting-note">Restore your data from a backup file. This will overwrite any current data for your user account.</p>
+                            <input type="file" accept=".json" ref={restoreInputRef} style={{display: 'none'}} onChange={onRestore} />
+                            <button className="settings-action-btn" onClick={() => restoreInputRef.current?.click()}>Upload Restore File</button>
                         </div>
                     )}
                     {activeTab === 'users' && currentUser?.role === 'admin' && (
-                        <div className="settings-section">
-                            <h3>User Management</h3>
-                            <p>Create and manage student user accounts.</p>
-                             <form onSubmit={handleUserCreateSubmit} className="user-management-form" style={{display: 'flex', gap: '8px', alignItems: 'flex-end', marginBottom: '24px'}}>
-                                <div className="form-group" style={{flex: 1}}>
-                                    <label>New Username</label>
-                                    <input className="input-field" type="text" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} placeholder="Username" required />
-                                </div>
-                                <div className="form-group" style={{flex: 1}}>
-                                    <label>Password</label>
-                                    <input className="input-field" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Password" required />
-                                </div>
-                                <button type="submit" className="btn btn--primary">Create</button>
+                        <div className="settings-section user-management-section">
+                            <h3>Create New Student</h3>
+                            <form onSubmit={handleUserCreateSubmit} className="user-management-form">
+                                <input type="text" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} placeholder="Username" required />
+                                <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Password" required />
+                                <button type="submit" className="liquid-button">Create</button>
                             </form>
                             
-                            <table className="user-list-table">
-                                <thead>
-                                    <tr>
-                                        <th>Username</th>
-                                        <th>Role</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {users.map(user => (
-                                        <tr key={user.username}>
-                                            <td>{user.username}</td>
-                                            <td>{user.role}</td>
-                                            <td>
-                                                {user.role !== 'admin' && (
-                                                    <button className="btn btn--danger" onClick={() => onUserDelete(user.username)}>Delete</button>
-                                                )}
-                                            </td>
+                            <h3>Existing Users</h3>
+                            <div className="user-list-table-wrapper">
+                                <table className="user-list-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Username</th>
+                                            <th>Role</th>
+                                            <th>Actions</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        {users.map(user => (
+                                            <tr key={user.username}>
+                                                <td>{user.username}</td>
+                                                <td>{user.role}</td>
+                                                <td>
+                                                    {user.role !== 'admin' && (
+                                                        <button className="btn-danger" onClick={() => onUserDelete(user.username)}>Delete</button>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     )}
                     {activeTab === 'about' && (
                         <div className="settings-section">
                             <h3>About Study Master</h3>
-                            <p>
+                            <p className="setting-note">
                                 Study Master is your personal AI-powered study partner, designed to help you understand your course material more effectively.
                                 Upload your documents, get summaries, generate flashcards and mind maps, and chat with an AI tutor that's focused on your content.
                             </p>
-                            <p style={{marginTop: '1rem'}}>Version: 3.1.0 (Design System Overhaul)</p>
-                            <p style={{marginTop: '1rem'}}>Created by: Muhammadu Muaz</p>
+                            <p className="setting-note" style={{marginTop: '1rem'}}>Version: 2.0.1 (Login Fix)</p>
+                            <p className="setting-note" style={{marginTop: '1rem'}}>Created by: Muhammadu Muaz</p>
                         </div>
                     )}
-                    </div>
                 </div>
             </div>
         </div>
@@ -900,15 +863,17 @@ const NotificationCenter = ({
     return (
         <div className="notification-panel-wrapper">
              <div className="notification-panel" onClick={e => e.stopPropagation()}>
-                <header className="modal__header notification-header">
+                <header className="notification-header">
                     <h3>Notifications ({unreadCount})</h3>
-                    <button className='btn btn--ghost' onClick={onClearAll} disabled={notifications.length === 0}>Clear All</button>
+                    <button onClick={onClearAll} disabled={notifications.length === 0}>Clear All</button>
                 </header>
                 <div className="notification-list">
                     {notifications.length > 0 ? (
                         notifications.map(n => (
                             <div key={n.id} className={`notification-item ${n.read ? 'read' : ''}`} onClick={() => onMarkAsRead(n.id)}>
-                                <div className="notification-icon"><IconBell className="icon icon--md" /></div>
+                                <div className="notification-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20 17h2v2H2v-2h2v-7c0-4.42 3.58-8 8-8s8 3.58 8 8v7Zm-2 0v-7c0-3.31-2.69-6-6-6s-6 2.69-6 6v7h12Zm-6 5c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2Z"/></svg>
+                                </div>
                                 <div className="notification-content">
                                     <p>{n.message}</p>
                                     <small>{new Date(n.date).toLocaleString()}</small>
@@ -971,6 +936,8 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isAddingSubject, setIsAddingSubject] = useState(false);
   const [newSubjectName, setNewSubjectName] = useState('');
+  const [isProcessingDocument, setIsProcessingDocument] = useState(false);
+  const [pastedText, setPastedText] = useState('');
   
   const [activeFeature, setActiveFeature] = useState<Feature | null>(null);
   const [featureContent, setFeatureContent] = useState<string | any[] | object | null>(null);
@@ -990,13 +957,14 @@ const App = () => {
   const [isInternetSearchEnabled, setIsInternetSearchEnabled] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large'>('medium');
-  const [theme, setTheme] = useState<Theme>('dark');
+  const [theme, setTheme] = useState<Theme>('liquid-crystal');
   const [isChatFullscreen, setIsChatFullscreen] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeMobileView, setActiveMobileView] = useState<'chat' | 'tools'>('chat');
 
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const ai = useMemo(() => new GoogleGenAI({ apiKey }), [apiKey]);
   
   // Apply theme and font size to the root element
@@ -1015,11 +983,18 @@ const App = () => {
 
     try {
       const storedUsersJSON = localStorage.getItem('studymaster_users');
+      // Start with the stored users, or an empty array if none are stored.
       const existingUsers: Credentials[] = storedUsersJSON ? JSON.parse(storedUsersJSON) : [];
+      
+      // Create a copy to modify
       const updatedUsers = [...existingUsers];
+
+      // A set for quick lookups of existing usernames
       const existingUsernames = new Set(existingUsers.map(u => u.username));
+
       let needsUpdate = false;
 
+      // Add default users only if they don't already exist
       defaultUsers.forEach(defaultUser => {
         if (!existingUsernames.has(defaultUser.username)) {
           updatedUsers.push(defaultUser);
@@ -1027,17 +1002,20 @@ const App = () => {
         }
       });
       
+      // If we added new users, or if it was the first run, save back.
       if (needsUpdate || !storedUsersJSON) {
         localStorage.setItem('studymaster_users', JSON.stringify(updatedUsers));
       }
+
       setUsers(updatedUsers);
 
     } catch (e) {
       console.error("Failed to load/merge users from localStorage, re-initializing with defaults.", e);
+      // Fallback in case of corrupted data
       localStorage.setItem('studymaster_users', JSON.stringify(defaultUsers));
       setUsers(defaultUsers);
     }
-    setIsLoadingAuth(false);
+    setIsLoadingAuth(false); // Finished checking for users
   }, []);
 
   // Effect to load data when user changes
@@ -1057,13 +1035,19 @@ const App = () => {
           setTodos(data.todos || []);
           setNotifications(data.notifications || []);
           if (data.settings) {
-            setTheme(data.settings.theme || 'dark');
+            setTheme(data.settings.theme || 'liquid-crystal');
             setFontSize(data.settings.fontSize || 'medium');
           }
           setActiveSubjectId(restoredSubjects[0]?.id || null);
         } else {
-          setSubjects([]); setEvents([]); setTodos([]); setNotifications([]);
-          setActiveSubjectId(null); setTheme('dark'); setFontSize('medium');
+          // If no data, reset the state for the new user
+          setSubjects([]);
+          setEvents([]);
+          setTodos([]);
+          setNotifications([]);
+          setActiveSubjectId(null);
+          setTheme('liquid-crystal');
+          setFontSize('medium');
         }
       } catch (e) {
         console.error("Failed to load user data, resetting state.", e);
@@ -1077,8 +1061,10 @@ const App = () => {
     if (currentUser) {
         try {
             const dataToSave = {
-                subjects: subjects.map(({ chat, ...rest }) => rest),
-                events, todos, notifications,
+                subjects: subjects.map(({ chat, ...rest }) => rest), // Don't save non-serializable chat object
+                events,
+                todos,
+                notifications,
                 settings: { theme, fontSize }
             };
             localStorage.setItem(`studymaster_data_${currentUser.username}`, JSON.stringify(dataToSave));
@@ -1104,8 +1090,12 @@ const App = () => {
   };
   
   const handleCreateUser = (username: string, pass: string) => {
-      if (!username.trim() || !pass.trim()) { alert("Username and password cannot be empty."); return; }
-      if (users.some(u => u.username === username)) { alert("Username already exists."); return; }
+      if (!username.trim() || !pass.trim()) {
+          alert("Username and password cannot be empty."); return;
+      }
+      if (users.some(u => u.username === username)) {
+          alert("Username already exists."); return;
+      }
       const newUser: Credentials = { username, password: pass, role: 'student' };
       const updatedUsers = [...users, newUser];
       setUsers(updatedUsers);
@@ -1113,7 +1103,9 @@ const App = () => {
   };
   
   const handleDeleteUser = (usernameToDelete: string) => {
-      if (usernameToDelete === 'admin') { alert("Cannot delete the admin user."); return; }
+      if (usernameToDelete === 'admin') {
+          alert("Cannot delete the admin user."); return;
+      }
       if (window.confirm(`Are you sure you want to delete user "${usernameToDelete}"? All their data will be lost.`)) {
           const updatedUsers = users.filter(u => u.username !== usernameToDelete);
           setUsers(updatedUsers);
@@ -1123,6 +1115,7 @@ const App = () => {
   };
 
   const activeSubject = subjects.find(s => s.id === activeSubjectId);
+  const unreadNotificationCount = notifications.filter(n => !n.read).length;
   
   const buildInitialChatParts = (subject: Subject): any[] => {
     const reminders = getUpcomingEventsPrompt(subject.id);
@@ -1151,6 +1144,12 @@ const App = () => {
     return prompt;
   };
   
+  const buildChatHistory = (subject: Subject) => {
+      const docContext = { role: 'user' as const, parts: buildInitialChatParts(subject) };
+      const apiHistory: { role: 'user' | 'model'; parts: { text: string }[] }[] = subject.messages.map(msg => ({ role: msg.role, parts: [{ text: msg.text }] }));
+      return [docContext, ...apiHistory];
+  };
+
   const handleAddSubjectClick = () => { setIsAddingSubject(true); setNewSubjectName(''); };
   const handleCancelAddSubject = () => { setIsAddingSubject(false); };
   
@@ -1360,6 +1359,89 @@ const App = () => {
         } finally { setIsGeneratingFeature(false); }
     };
 
+    const handleUploadClick = () => { fileInputRef.current?.click(); };
+    const getBase64 = (file: File): Promise<string> => new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result as string); reader.onerror = reject; reader.readAsDataURL(file); });
+    const getTextFromImage = async (file: File): Promise<string> => {
+        const base64Data = await getBase64(file);
+        const imagePart = { inlineData: { data: base64Data.split(',')[1], mimeType: file.type } };
+        const textPart = { text: 'Extract all text from the document in this image. Preserve the structure if possible. If there is no text, return an empty string.' };
+        const response = await ai.models.generateContent({ model: 'gemini-2.5-flash', contents: { parts: [imagePart, textPart] } });
+        return response.text;
+    };
+    const getTextAndImagesFromPdf = async (file: File): Promise<{text: string; images: DocumentImage[]}> => {
+        const base64Data = await getBase64(file);
+        const pdfPart = { inlineData: { data: base64Data.split(',')[1], mimeType: 'application/pdf' } };
+        const instructionPart = { text: "Analyze the provided PDF and extract its contents into the required JSON format. This includes all text and all meaningful images/diagrams." };
+        try {
+            const response = await ai.models.generateContent({
+                model: "gemini-2.5-flash", contents: { parts: [instructionPart, pdfPart] },
+                config: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: Type.OBJECT, properties: {
+                            extractedText: { type: Type.STRING, description: 'All text extracted from the PDF, preserving structure and formatting like headings and paragraphs.' },
+                            extractedImages: { type: Type.ARRAY, description: 'An array of all diagrams, figures, and images found in the PDF. IMPORTANT: Only include meaningful figures, ignore logos or decorative elements.',
+                                items: { type: Type.OBJECT, properties: {
+                                        name: { type: Type.STRING, description: 'A descriptive name for the image, like "Figure 1.1". If no name is available, create one.' },
+                                        caption: { type: Type.STRING, description: 'The original caption of the image from the document, if available. Otherwise, an empty string.' },
+                                        imageData: { type: Type.STRING, description: 'The image data encoded as a Base64 string, without the data URI prefix.' }
+                                    }, required: ["name", "caption", "imageData"]
+                                }
+                            }
+                        }, required: ["extractedText", "extractedImages"]
+                    }
+                },
+            });
+            const parsedData = JSON.parse(response.text) as ExtractedPdfData;
+            if (!parsedData.extractedText || !Array.isArray(parsedData.extractedImages)) throw new Error("Parsed JSON has incorrect structure.");
+            const images = (parsedData.extractedImages || []).map((img: { name: string; caption: string; imageData: string }) => ({
+                name: img.name || 'Untitled Figure', caption: img.caption || '',
+                data: `data:image/png;base64,${img.imageData}`
+            })).filter((img: DocumentImage) => img.data.length > 30);
+            return { text: parsedData.extractedText, images };
+        } catch (error) {
+            console.error("Failed to parse PDF with image extraction, falling back to text-only extraction.", error);
+            const textOnlyResponse = await ai.models.generateContent({ model: 'gemini-2.5-flash', contents: { parts: [ { text: 'Extract all text from the provided PDF document.' }, pdfPart] }});
+            return { text: textOnlyResponse.text, images: [] };
+        }
+    };
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files || e.target.files.length === 0 || !activeSubject) return;
+        const files: File[] = Array.from(e.target.files);
+        e.target.value = '';
+        setIsProcessingDocument(true);
+        for (const file of files) {
+            try {
+                if (activeSubject.documents.some(d => d.name === file.name)) { alert(`A document named "${file.name}" already exists for this subject. Please rename the file and try again.`); continue; }
+                let documentText = ''; 
+                let documentImages: DocumentImage[] = [];
+                if (file.type.startsWith('image/')) {
+                    documentText = await getTextFromImage(file);
+                    const base64Data = await getBase64(file);
+                    documentImages = [{ name: file.name, data: base64Data, caption: 'Uploaded image' }];
+                } else if (file.type === 'application/pdf') {
+                    const { text, images } = await getTextAndImagesFromPdf(file);
+                    documentText = text; documentImages = images;
+                } else if (file.type.startsWith('text/') || file.name.endsWith('.md')) { documentText = await file.text();
+                } else { alert(`Unsupported file type: ${file.type || 'unknown'}. Please upload an image, PDF, or text file.`); continue; }
+                if (documentText.trim() || documentImages.length > 0) {
+                    const newDoc: Document = { name: file.name, content: documentText, images: documentImages };
+                    setSubjects(currentSubjects => currentSubjects.map(s => s.id === activeSubjectId ? { ...s, documents: [...s.documents, newDoc] } : s));
+                } else { alert(`Could not extract any content from "${file.name}". The file might be empty, corrupted, or unreadable.`); }
+            } catch (error) { console.error('Error processing file:', error); alert(`Failed to process the file: ${file.name}.`); }
+        }
+        setIsProcessingDocument(false);
+    };
+    const handleRemoveDocument = (docNameToRemove: string) => { if (activeSubject) { const updatedDocs = activeSubject.documents.filter(d => d.name !== docNameToRemove); updateSubject(activeSubject.id, { documents: updatedDocs }); } };
+    const handleAddPastedText = () => {
+        if (!activeSubject || !pastedText.trim()) return;
+        let docName = 'Pasted Content'; 
+        let counter = 1;
+        while (activeSubject.documents.some(d => d.name === docName)) { docName = `Pasted Content ${++counter}`; }
+        const newDoc: Document = { name: docName, content: pastedText.trim(), images: [] };
+        updateSubject(activeSubject.id, { documents: [...activeSubject.documents, newDoc] });
+        setPastedText('');
+    };
     const handleDocumentsUpdate = async (newDocs: Document[]) => {
         if (!activeSubject) return;
         setIsLoading(true);
@@ -1446,7 +1528,7 @@ const App = () => {
                         setTodos(data.todos || []);
                         setNotifications(data.notifications || []);
                         if (data.settings) {
-                            const validThemes: Theme[] = ['light', 'dark'];
+                            const validThemes: Theme[] = ['liquid-crystal', 'deep-blue', 'neon-green-blue', 'neon-pink-purple', 'neon-pink-orange'];
                             if (validThemes.includes(data.settings.theme)) { setTheme(data.settings.theme as Theme); }
                             const validFontSizes = ['small', 'medium', 'large'];
                             if (validFontSizes.includes(data.settings.fontSize)) { setFontSize(data.settings.fontSize as 'small' | 'medium' | 'large'); }
@@ -1470,14 +1552,15 @@ const App = () => {
             setTodos([]);
             setNotifications([]);
             setActiveSubjectId(null);
+            // The auto-saving useEffect will persist this empty state, but we also remove it directly for good measure.
             localStorage.removeItem(`studymaster_data_${currentUser.username}`);
-            setIsSettingsOpen(false);
+            setIsSettingsOpen(false); // Close settings modal after clearing
         }
     };
 
     const renderFeatureContent = () => {
         if (isGeneratingFeature) { return ( <div className="feature-loading-view"> <div className="loading-spinner"></div> <p>Generating {activeFeature}...</p> </div> ); }
-        if (!featureContent && activeFeature !== 'figures') { return ( <div className="feature-placeholder"> <h3>Study Tools</h3> <p>Select a feature to generate insights, or ask a question in chat.</p> </div> ); }
+        if (!featureContent && activeFeature !== 'figures') { return ( <div className="feature-placeholder"> <h3>Study Tools</h3> <p>Select a feature from the toolbar above to generate insights from your document, or ask a question in the chat.</p> </div> ); }
         switch (activeFeature) {
             case 'flashcards':
                  if (!Array.isArray(featureContent)) { return <div className="feature-content">{typeof featureContent === 'string' ? featureContent : 'Error: Invalid content for flashcards.'}</div>; }
@@ -1491,49 +1574,60 @@ const App = () => {
             case 'summary': case 'questions': case 'workout': case 'did-you-know': case 'key-takeaways':
                  if (typeof featureContent === 'string') { return <div className="feature-content" dangerouslySetInnerHTML={{ __html: markdownToHtml(featureContent) }}></div> }
                  return <div className="feature-content">Could not display content.</div>;
-            default: return ( <div className="feature-placeholder"> <h3>Study Tools</h3> <p>Select a feature to generate insights, or ask a question in chat.</p> </div> );
+            default: return null;
         }
     };
 
     const renderSubjectView = () => {
         if (!activeSubject) {
-          return ( <div className="welcome-view"> <div className="welcome-content"> <button className="btn btn--icon mobile-menu-btn" onClick={() => setIsSidebarOpen(true)}> <IconMenu className="icon icon--lg" /> </button> <h2>Welcome to Study Master</h2> <p>Your AI-powered study partner. Select a subject or create a new one to begin.</p> </div> </div> );
+          return ( <div className="welcome-view"> <div className="welcome-content"> <button className="mobile-menu-btn" onClick={() => setIsSidebarOpen(true)}> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg> </button> <h2>Welcome to Study Master</h2> <p>Your AI-powered study partner. Select a subject or create a new one to begin.</p> </div> </div> );
         }
         return (
           <div className="subject-view">
             <header className="subject-header">
-                <button className="btn btn--icon mobile-menu-btn" onClick={() => setIsSidebarOpen(true)}> <IconMenu className="icon icon--lg" /> </button>
+                <button className="mobile-menu-btn" onClick={() => setIsSidebarOpen(true)}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
                 <h2>{activeSubject.name}</h2>
-                <div className="subject-header__actions">
+                <div className="main-view-actions">
                      <div className="notification-bell-wrapper">
-                        <button className="btn btn--icon" onClick={() => setIsNotificationCenterOpen(prev => !prev)} title="Notifications">
-                            <IconBell className="icon icon--md" />
-                            {notifications.filter(n => !n.read).length > 0 && <span className="notification-badge"/>}
+                        <button className="notification-bell liquid-button" onClick={() => setIsNotificationCenterOpen(prev => !prev)} title="Notifications">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                            {unreadNotificationCount > 0 && <span className="notification-badge">{unreadNotificationCount}</span>}
                         </button>
                         <NotificationCenter isOpen={isNotificationCenterOpen} notifications={notifications} onClose={() => setIsNotificationCenterOpen(false)} onMarkAsRead={handleMarkNotificationAsRead} onClearAll={handleClearAllNotifications} />
                     </div>
-                    <button className="btn btn--icon" onClick={() => setIsCalendarOpen(true)} title="Open Calendar">
-                        <IconCalendar className="icon icon--md" />
+                    <button className="calendar-btn liquid-button" onClick={() => setIsCalendarOpen(true)} title="Open Calendar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                     </button>
                 </div>
             </header>
 
             {!activeSubject.isDocSaved ? (
-                <div className="document-setup-view">
-                  <div className="document-setup-area">
-                    <h3>Upload Study Materials</h3>
-                    <p>Add documents, notes, or images to start your session.</p>
-                     <button className="btn btn--primary" onClick={() => setIsDocManagerOpen(true)}>
-                        <IconUpload className="icon icon--sm"/> Manage Documents
-                     </button>
-                     <button 
-                        className="btn btn--secondary" 
-                        onClick={handleSaveDocument} 
-                        disabled={activeSubject.documents.length === 0 || isLoading}> 
-                        {isLoading ? 'Processing...' : `Start Study Session`} 
-                    </button>
-                  </div>
+              <div className="document-setup-view">
+                <div className="document-setup-area">
+                    {isProcessingDocument && ( <div className="document-processing-overlay"> <div className="loading-spinner"></div> <p>Analyzing documents, please wait...</p> </div> )}
+                    <div className="document-list-container">
+                        <h3>Study Materials ({activeSubject.documents.length})</h3>
+                        <ul className="document-list">
+                            {activeSubject.documents.map(doc => ( <li key={doc.name} className="document-item" title={doc.name}> <span className="doc-icon">📄</span> <span className="doc-name">{doc.name}</span> <span className="doc-size">{(doc.content.length / 1024).toFixed(1)} KB</span> <button className="doc-remove-btn" onClick={() => handleRemoveDocument(doc.name)} title={`Remove ${doc.name}`}>&times;</button> </li> ))}
+                            {activeSubject.documents.length === 0 && ( <p className="no-docs-message">No documents added yet. Upload or paste content below to get started.</p> )}
+                        </ul>
+                    </div>
+                    <div className="document-add-container">
+                        <div className="document-upload-controls">
+                            <button className="upload-btn liquid-button" onClick={handleUploadClick}> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Upload Files </button>
+                            <p className="upload-hint">Upload images, PDFs, or text files.</p>
+                             <input type="file" ref={fileInputRef} onChange={handleFileChange} style={{display: 'none'}} accept=".txt,.md,text/plain,image/jpeg,image/png,image/webp,.pdf,application/pdf" multiple />
+                        </div>
+                        <div className="document-paste-controls">
+                            <textarea className="document-paste-area" placeholder="Or paste your notes here..." value={pastedText} onChange={(e) => setPastedText(e.target.value)} />
+                            <button className="paste-add-btn liquid-button" onClick={handleAddPastedText} disabled={!pastedText.trim()}>Add Pasted Text</button>
+                        </div>
+                    </div>
+                    <button className="save-doc-btn liquid-button" onClick={handleSaveDocument} disabled={activeSubject.documents.length === 0 || isLoading || isProcessingDocument}> {isLoading ? 'Processing...' : `Start Study Session`} </button>
                 </div>
+              </div>
             ) : (
               <div className="study-session-view">
                 <div className="mobile-main-nav">
@@ -1544,15 +1638,15 @@ const App = () => {
                     <aside className="chat-container">
                         <div className="chat-header">
                             <h4>Chat Session</h4>
-                            <button className="btn btn--icon" onClick={() => setIsChatFullscreen(prev => !prev)} title={isChatFullscreen ? "Show Feature Panel" : "Expand Chat"}>
-                                {isChatFullscreen ? <IconArrowsIn className="icon icon--md" /> : <IconArrowsOut className="icon icon--md" />}
+                            <button className="fullscreen-toggle-btn liquid-button" onClick={() => setIsChatFullscreen(prev => !prev)} title={isChatFullscreen ? "Show Feature Panel" : "Expand Chat"}>
+                                {isChatFullscreen ? ( <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg> ) : ( <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h6v6m-11 5L21 3m-6 12v6h-6m-5-11L3 21"/></svg> )}
                             </button>
                         </div>
                         <div className="chat-messages">
                         {activeSubject.messages.map((msg, index) => (
                             <div key={index} className={`message ${msg.role}`}>
-                            <div className="message__content">
-                                {msg.role === 'model' && msg.text === '' && isLoading ? ( <div className="loading-dots"> <div/><div/><div/><div/> </div> ) : ( <div dangerouslySetInnerHTML={{ __html: msg.role === 'model' ? markdownToHtml(msg.text) : msg.text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}} /> )}
+                            <div className="message-content">
+                                {msg.role === 'model' && msg.text === '' && isLoading ? ( <div className="loading-dots"> <div></div><div></div><div></div><div></div> </div> ) : ( <div dangerouslySetInnerHTML={{ __html: msg.role === 'model' ? markdownToHtml(msg.text) : msg.text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}} /> )}
                                 {msg.sources && msg.sources.length > 0 && ( <div className="message-sources"> <strong>Sources:</strong> <ul> {msg.sources.map((source, i) => ( <li key={i}> <a href={source.uri} target="_blank" rel="noopener noreferrer">{source.title || source.uri}</a> </li> ))} </ul> </div> )}
                             </div>
                             </div>
@@ -1560,35 +1654,25 @@ const App = () => {
                         <div ref={messagesEndRef} />
                         </div>
                         <form className="chat-input-form" onSubmit={handleSendMessage}>
-                            <textarea
-                                className="input-field chat-input"
-                                placeholder={isInternetSearchEnabled ? "Ask a question (with internet search)..." : "Ask a question..."}
-                                value={userInput}
-                                onChange={(e) => setUserInput(e.target.value)}
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter' && !e.shiftKey) {
-                                    e.preventDefault();
-                                    handleSendMessage(e as any);
-                                  }
-                                }}
-                                disabled={isLoading}
-                                rows={1}
-                            />
+                            <button type="button" className="upload-doc-btn liquid-button" onClick={() => setIsDocManagerOpen(true)} title="Add/Manage Documents" disabled={isLoading}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                            </button>
+                            <input type="text" className="chat-input" placeholder={isInternetSearchEnabled ? "Ask a question (with internet search)..." : "Ask a question..."} value={userInput} onChange={(e) => setUserInput(e.target.value)} disabled={isLoading} />
                             <div className="chat-input-actions">
-                                <button type="button" className={`btn btn--icon internet-toggle-btn ${isInternetSearchEnabled ? 'active' : ''}`} onClick={() => setIsInternetSearchEnabled(!isInternetSearchEnabled)} title={isInternetSearchEnabled ? "Disable Internet Search" : "Enable Internet Search"} disabled={isLoading} > <IconGlobe className="icon icon--md" /> </button>
-                                <button type="button" className="btn btn--icon" onClick={() => setIsDocManagerOpen(true)} title="Manage Documents"><IconPaperclip className="icon icon--md" /></button>
-                                <button type="submit" className="btn btn--primary btn--icon" disabled={isLoading || !userInput.trim()}> <IconSend className="icon icon--md" /> </button>
+                                <button type="button" className={`internet-toggle-btn liquid-button ${isInternetSearchEnabled ? 'active' : ''}`} onClick={() => setIsInternetSearchEnabled(!isInternetSearchEnabled)} title={isInternetSearchEnabled ? "Disable Internet Search" : "Enable Internet Search"} disabled={isLoading} > <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg> </button>
+                                <button type="submit" className="send-btn liquid-button" disabled={isLoading || !userInput.trim()}> <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg> </button>
                             </div>
                         </form>
                     </aside>
                     <main className="feature-display-area">
                       <div className="feature-toolbar">
-                          <button className={`btn btn--secondary ${activeFeature === 'key-takeaways' ? 'active' : ''}`} onClick={() => handleFeatureRequest('key-takeaways')}>Takeaways</button>
-                          <button className={`btn btn--secondary ${activeFeature === 'summary' ? 'active' : ''}`} onClick={() => handleFeatureRequest('summary')}>Summary</button>
-                          <button className={`btn btn--secondary ${activeFeature === 'flashcards' ? 'active' : ''}`} onClick={() => handleFeatureRequest('flashcards')}>Flashcards</button>
-                          <button className={`btn btn--secondary ${activeFeature === 'mind-map' ? 'active' : ''}`} onClick={() => handleFeatureRequest('mind-map')}>Mind Map</button>
-                          <button className={`btn btn--secondary ${activeFeature === 'figures' ? 'active' : ''}`} onClick={() => handleFeatureRequest('figures')}>Figures</button>
-                          <button className={`btn btn--secondary ${activeFeature === 'questions' ? 'active' : ''}`} onClick={() => handleFeatureRequest('questions')}>Questions</button>
+                          <button className={`feature-btn liquid-button ${activeFeature === 'key-takeaways' ? 'active' : ''}`} onClick={() => handleFeatureRequest('key-takeaways')}>Key Takeaways</button>
+                          <button className={`feature-btn liquid-button ${activeFeature === 'summary' ? 'active' : ''}`} onClick={() => handleFeatureRequest('summary')}>Summary</button>
+                          <button className={`feature-btn liquid-button ${activeFeature === 'flashcards' ? 'active' : ''}`} onClick={() => handleFeatureRequest('flashcards')}>Flashcards</button>
+                          <button className={`feature-btn liquid-button ${activeFeature === 'mind-map' ? 'active' : ''}`} onClick={() => handleFeatureRequest('mind-map')}>Mind Map</button>
+                          <button className={`feature-btn liquid-button ${activeFeature === 'figures' ? 'active' : ''}`} onClick={() => handleFeatureRequest('figures')}>Figures</button>
+                          <button className={`feature-btn liquid-button ${activeFeature === 'questions' ? 'active' : ''}`} onClick={() => handleFeatureRequest('questions')}>Questions</button>
+                          <button className={`feature-btn liquid-button`} onClick={() => setIsDocManagerOpen(true)}>Manage Documents</button>
                       </div>
                       <div className="feature-content-wrapper">
                         {renderFeatureContent()}
@@ -1602,7 +1686,7 @@ const App = () => {
     };
   
   if (isLoadingAuth) {
-    return ( <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#111111', color: 'white' }}> <div className="loading-spinner"/> </div> );
+    return ( <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#1a1a1a', color: 'white', fontFamily: 'sans-serif' }}> <h2>Loading Study Master...</h2> </div> );
   }
 
   if (!currentUser) {
@@ -1611,7 +1695,7 @@ const App = () => {
 
   return (
     <>
-      <div className={`mobile-overlay ${isSidebarOpen ? 'open' : ''}`} onClick={() => setIsSidebarOpen(false)}></div>
+      {isSidebarOpen && <div className="mobile-overlay" onClick={() => setIsSidebarOpen(false)}></div>}
       <SettingsModal 
         isOpen={isSettingsOpen} 
         onClose={() => setIsSettingsOpen(false)} 
@@ -1653,16 +1737,18 @@ const App = () => {
       )}
       
       <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
-        <header className="sidebar__header">
+        <div className="sidebar-header">
           <h1>Subjects</h1>
-            <button className="btn btn--secondary" onClick={handleAddSubjectClick} disabled={isAddingSubject}> <IconPlus className="icon icon--sm" /> Add </button>
-        </header>
+          <div className="sidebar-header-actions">
+            <button className="add-subject-btn liquid-button" onClick={handleAddSubjectClick} disabled={isAddingSubject}> + Add </button>
+          </div>
+        </div>
         {isAddingSubject && (
           <form onSubmit={handleCreateSubject} className="add-subject-form">
-            <input type="text" className="input-field" value={newSubjectName} onChange={(e) => setNewSubjectName(e.target.value)} placeholder="New subject name..." autoFocus />
+            <input type="text" className="add-subject-input" value={newSubjectName} onChange={(e) => setNewSubjectName(e.target.value)} placeholder="New subject name..." autoFocus />
             <div className="add-subject-actions">
-              <button type="button" className="btn btn--secondary" onClick={handleCancelAddSubject}>Cancel</button>
-              <button type="submit" className="btn btn--primary">Save</button>
+              <button type="submit" className="btn-save">Save</button>
+              <button type="button" className="btn-cancel" onClick={handleCancelAddSubject}>Cancel</button>
             </div>
           </form>
         )}
@@ -1679,22 +1765,21 @@ const App = () => {
                 <span className="subject-name">{subject.name}</span> 
               )}
               <div className="subject-item-actions">
-                <button className="btn btn--icon" onClick={(e) => handleEnableEditing(e, subject.id)} title={`Rename "${subject.name}"`}>
-                  <IconPencil className="icon icon--sm" />
+                <button className="edit-subject-btn liquid-button" onClick={(e) => handleEnableEditing(e, subject.id)} title={`Rename "${subject.name}"`}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                 </button>
-                <button className="btn btn--icon" onClick={(e) => handleDeleteSubject(e, subject.id)} title={`Delete "${subject.name}"`}>
-                    <IconTrash className="icon icon--sm" />
-                </button>
+                <button className="delete-subject-btn liquid-button" onClick={(e) => handleDeleteSubject(e, subject.id)} title={`Delete "${subject.name}"`}> &times; </button>
               </div>
             </li>
           ))}
         </ul>
-        <footer className="sidebar__footer">
-            <IconUser className="icon icon--md" />
-            <span className="sidebar__footer-user">{currentUser.username}</span>
-            <button className="btn btn--icon" onClick={handleLogout} title="Logout"><IconSignOut className="icon icon--md" /></button>
-            <button className="btn btn--icon" onClick={() => setIsSettingsOpen(true)} title="Options"><IconSettings className="icon icon--md" /></button>
-        </footer>
+        <div className="sidebar-footer">
+            <span style={{marginRight: 'auto', color: 'var(--text-secondary)'}}>User: {currentUser.username}</span>
+            <button className="settings-btn liquid-button" onClick={handleLogout} title="Logout">Logout</button>
+            <button className="settings-btn liquid-button" onClick={() => setIsSettingsOpen(true)} title="Options">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </button>
+        </div>
       </aside>
       
       <main className="main-content">
