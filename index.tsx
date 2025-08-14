@@ -894,15 +894,23 @@ const App = () => {
       if (storedUsers) {
         setUsers(JSON.parse(storedUsers));
       } else {
-        // Initialize with default admin user if no users are stored
-        const adminUser = { username: 'admin', password: 'admin', role: 'admin' as const };
-        localStorage.setItem('studymaster_users', JSON.stringify([adminUser]));
-        setUsers([adminUser]);
+        // Initialize with default users if no users are stored
+        const defaultUsers: Credentials[] = [
+          { username: 'admin', password: 'admin', role: 'admin' },
+          { username: 'Nilfa', password: 'Mznil169', role: 'student' },
+          { username: 'Nimran', password: 'Nimran987654', role: 'student' },
+        ];
+        localStorage.setItem('studymaster_users', JSON.stringify(defaultUsers));
+        setUsers(defaultUsers);
       }
     } catch (e) {
       console.error("Failed to load users from localStorage", e);
-      const adminUser = { username: 'admin', password: 'admin', role: 'admin' as const };
-      setUsers([adminUser]);
+      const defaultUsers: Credentials[] = [
+        { username: 'admin', password: 'admin', role: 'admin' },
+        { username: 'Nilfa', password: 'Mznil169', role: 'student' },
+        { username: 'Nimran', password: 'Nimran987654', role: 'student' },
+      ];
+      setUsers(defaultUsers);
     }
     setIsLoadingAuth(false); // Finished checking for users
   }, []);
